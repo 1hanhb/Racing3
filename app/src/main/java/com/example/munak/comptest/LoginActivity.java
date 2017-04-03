@@ -23,6 +23,7 @@ public class LoginActivity extends AppCompatActivity {
         sign_in_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                /*
                 EditText editText1 = (EditText) findViewById(R.id.login_id);
 
                 EditText editText2 = (EditText) findViewById(R.id.login_password);
@@ -34,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
                 player.readData();
 
                 Toast.makeText(LoginActivity.this, player.getName().toString(), Toast.LENGTH_SHORT).show();
-
+*/
 
                 Intent intent1 = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent1);
