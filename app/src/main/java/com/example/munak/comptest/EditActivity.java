@@ -69,8 +69,6 @@ public class EditActivity extends AppCompatActivity {
         startActivityForResult(intent, PICK_FROM_ALBUM);
     }
 
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -125,7 +123,6 @@ public class EditActivity extends AppCompatActivity {
                 if (f.exists()) {
                     f.delete();
                 }
-
             }
         }
     }
@@ -155,7 +152,4 @@ public class EditActivity extends AppCompatActivity {
         }
 
     }
-
-
-
 }

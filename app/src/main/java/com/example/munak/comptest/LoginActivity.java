@@ -19,6 +19,9 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        Intent intent = new Intent(this, SplashActivity.class);
+        startActivity(intent);
+
         Button sign_in_button = (Button) findViewById(R.id.login_button_sign_in);
         sign_in_button.setOnClickListener(new View.OnClickListener() {
             @Override
