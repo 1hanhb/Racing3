@@ -8,15 +8,31 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
         android:orientation="horizontal"
         android:layout_gravity="center"
         android:gravity="center">
 
-        <ImageView
-            android:id="@+id/editProfile"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:src="@drawable/emma2"/>
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="50dp">
+
+            <ImageView
+                android:id="@+id/editProfileEdge"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:layout_gravity="center"
+                android:src="@drawable/edge_icon"/>
+
+            <ImageView
+                android:id="@+id/editProfile"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:layout_gravity="center"
+                android:src="@drawable/emma2"/>
+
+        </FrameLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -49,7 +65,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="name : "/>
+            android:text="name : "
+            android:textSize="20dp"/>
 
         <EditText
             android:layout_width="wrap_content"

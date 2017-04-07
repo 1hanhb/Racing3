@@ -2,6 +2,8 @@ package com.example.munak.comptest;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -35,6 +37,8 @@ public class EditActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit);
 
         iv_UserPhoto = (ImageView) findViewById(R.id.editProfile);
+        iv_UserPhoto.setBackground(new ShapeDrawable(new OvalShape()));
+        iv_UserPhoto.setClipToOutline(true);
 
         Button editPicture = (Button) findViewById(R.id.editPicture);
         editPicture.setOnClickListener(new View.OnClickListener() {
