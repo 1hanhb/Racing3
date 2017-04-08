@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Edit Button Click Event
         Button mainEditButton = (Button) findViewById(R.id.mainEditButton);
         mainEditButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,6 +59,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Start Button Click Event
+        Button mainStartButton = (Button) findViewById(R.id.mainStartButton);
+        mainStartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        //Tmap Button Click Event
         Button mainTmapButton = (Button) findViewById(R.id.mainTmapButton);
         mainTmapButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,6 +83,27 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Record Button Click Event
+        Button mainRecordButton = (Button) findViewById(R.id.mainRecordButton);
+        mainRecordButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent2 = new Intent(MainActivity.this, RecordActivity.class);
+                startActivity(intent2);
+            }
+        });
+
+        //Rank Button Click Event
+        Button mainRankButton = (Button) findViewById(R.id.mainRankButton);
+        mainRankButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent3 = new Intent(MainActivity.this, RankActivity.class);
+                startActivity(intent3);
+            }
+        });
+
+        //Twitter Button Click Event
         ImageButton mainTwitter = (ImageButton) findViewById(R.id.mainTwitter);
         mainTwitter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Line Button Click Event
         ImageButton mainLine = (ImageButton) findViewById(R.id.mainLine);
         mainLine.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Instagram Button Click Event
         ImageButton mainInstagram = (ImageButton) findViewById(R.id.mainInstagram);
         mainInstagram.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,7 +129,6 @@ public class MainActivity extends AppCompatActivity {
                 shareInstagram();
             }
         });
-
 
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
@@ -105,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
         profile.setClipToOutline(true);
     }
 
+    //Kakao Button Click Event
     public void shareKakao(View v) {
         try {
             final KakaoLink kakaoLink = KakaoLink.getKakaoLink(this);
@@ -125,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //Facebook Button Click Event
     public void shareFacebook(View v)
     {
         ShareLinkContent content = new ShareLinkContent.Builder()
