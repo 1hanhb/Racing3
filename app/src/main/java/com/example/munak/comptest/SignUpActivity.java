@@ -108,23 +108,21 @@ public class SignUpActivity extends AppCompatActivity {
 
     //db 생성
     private void createDatabase(String name){
-        try{
-
+        try {
             db = openOrCreateDatabase(name, MODE_ENABLE_WRITE_AHEAD_LOGGING,null);
             createdDB = true;
-            try{
+            try {
                 if(createdDB) {
                     createTable(PLAYERTABLE);
                 }
-            }catch(Exception e){}
-        }catch(Exception ex){
+            } catch(Exception e){}
+        } catch(Exception ex) {
             Toast.makeText(this, "db 생성 안됨", Toast.LENGTH_SHORT).show();
         }
     }
 
     //table 생성
     private void createTable(String name) {
-
         if(createdDB) {
             db.execSQL("create table " + name + "("
                     + "email text primary key,"
@@ -156,7 +154,7 @@ public class SignUpActivity extends AppCompatActivity {
                         + "'" + p.getUseSleepinessCenter() + "');";
                 db.execSQL(sql);
                 return true;
-            }catch(Exception e){
+            } catch(Exception e) {
                 Toast.makeText(this, "이미 존재하는 아이디입니다", Toast.LENGTH_SHORT).show();
                 return false;
             }

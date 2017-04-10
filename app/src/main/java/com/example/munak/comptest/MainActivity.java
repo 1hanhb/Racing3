@@ -2,6 +2,7 @@ package com.example.munak.comptest;
 
 import android.Manifest;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -9,9 +10,17 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -38,7 +47,11 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SensorEventListener {
+
+    Sensor accelerometer;
+    SensorManager sensorManager;
+    LocationManager locationManager;
 
     //permissionRequestCode
     private static final int REQUEST_EXTERNAL_STORAGE_CODE = 1;
@@ -48,6 +61,32 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //START
+        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+
+        //가속도계
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+
+        //속도측정 (LocationManager)
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+
+        //위치정보 받아오기
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            Toast.makeText(this, "locationmanager update failed", Toast.LENGTH_SHORT).show();
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 100, 1, locationListener);
 
         //Edit Button Click Event
         Button mainEditButton = (Button) findViewById(R.id.mainEditButton);
@@ -138,6 +177,123 @@ public class MainActivity extends AppCompatActivity {
         profile.setClipToOutline(true);
     }
 
+    //START
+    LocationListener locationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            InGameStatus.setVelocity(location.getSpeed()); //속도 값 저장
+            InGameStatus.setLocationX(location.getLongitude()); //위도 경도 값 저장
+            InGameStatus.setLocationY(location.getLatitude());
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
+    };
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+
+        InGameStatus.setAcceleration(event.values[1], event.values[2]);
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+    class InGameThread extends Thread{
+        public void run(){
+
+            //급가속 급감속에 따라 점수 차감 (-50점)
+            //속도를 측정하고 위반하면 점수 차감 (-10점) / 적정속도일 경우 +1점 -> 제한속도 불러오기
+            //졸음쉼터 (+1점) -> 졸음쉼터 위치 불러오기
+            //칼치기 감지 쓰레드(국도일 때, 지정 시간동안 칼치기 감지함, -50점) -> IC
+
+            while (InGameStatus.getStart()) {
+
+                try{
+                    Thread.sleep(1000);
+
+                    //1. 급가속
+                    //급가속 : 초당 11km/h ~ 25km/h를 넘었을 때 점수 차감
+                    if( 3.05f <=InGameStatus.getAccelerationZ() ||  InGameStatus.getAccelerationZ() <=7.9f ) {
+                        InGameStatus.setTotalScore(0, -50); // 점수 50 감소
+                        InGameStatus.setViolationAccel(1); //가속도 위반 횟수 1 증가
+                    }
+                    //급감속 : 초당 7.5km/h ~ 40km/h 감속 운행한 경우
+                    else if( InGameStatus.getAccelerationZ() <=- 2.08f || 11.1f<= InGameStatus.getAccelerationZ()  ) {
+                        InGameStatus.setTotalScore(0, -50); // 점수 50 감소
+                        InGameStatus.setViolationAccel(1); //가속도 위반 횟수 1 증가
+                    }
+
+                    //2. 과속
+                    //현재 위치를 통해 도로 별 제한속도를 구한다(공공데이터 사용).
+                    //임시로 110km/h로 지정하였음.
+                    if(110.0f <= InGameStatus.getVelocity()){
+
+                        InGameStatus.setTotalScore(0, -10); //점수 10 감소
+                        InGameStatus.setViolationVelocity(1); // 속도 위반 횟수 1 증가
+
+                    }
+                    else if(15.0f <= InGameStatus.getVelocity()){
+                        //규정 속도롤 지켰을 때는 1초마다 점수가 올라간다.
+                        InGameStatus.setTotalScore(0, +1);
+                    } // 위의 상황이 아닌 경우 점수 변동 없음
+
+
+                    //3.졸음쉼터
+                    //현재 졸음쉼터에 있는지 판단하는 메서드(isAtSleepinessArea) 호출
+                    if(LocationOfSleepinessArea.isAtSleepinessArea(InGameStatus.getLocationX(),InGameStatus.getLocationY())){
+                        InGameStatus.setTotalScore(0, +1); //1점 증가
+                        InGameStatus.setUseSleepinessCenter(1); // 졸음쉼터 이용 횟수 1 증가
+                    }
+
+
+                    //4. 칼치기
+                    //현재 국도에 위치한 경우
+                    if(LocationOfIC.isOnNationalHighway(InGameStatus.getLocationX(),InGameStatus.getLocationY())){
+
+                        // 옆쪽으로 가속하고 있는 경우 칼치기 카운트 증가
+                        // 옆쪽 방향으로 가속이 3.0m/s^2 이상일 경우
+                        if(2.0f<=Math.abs(InGameStatus.getAccelerationY())){
+                            InGameStatus.setKalCount(1);
+                        } else {
+                            //옆으로 가속하지 않는 경우, 칼치기 카운트 감소.
+                            //0 미만으로는 감소되지 않는다.
+                            InGameStatus.setKalCount(-1);
+                        }
+
+                        //총 칼치기 카운트가 10 이상인 경우 칼치기로 간주하고, 점수 차감 및 칼치기 횟수 증가
+                        if(10 <= InGameStatus.getKalCount()){
+                            InGameStatus.setTotalScore(0, -50);
+                            InGameStatus.setViolationKal(1);
+                        }
+
+                    }
+
+
+                } catch (InterruptedException e){
+
+
+                }
+
+            }
+        }
+    }
+
     //Kakao Button Click Event
     public void shareKakao(View v) {
         try {
@@ -201,8 +357,7 @@ public class MainActivity extends AppCompatActivity {
             intent.setAction(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(text));
             startActivity(intent);
-        }catch (ActivityNotFoundException e)
-        {
+        } catch (ActivityNotFoundException e) {
             //앱 미설치 시
             String appPackageName = "jp.naver.line.android"; // getPackageName() from Context or Activity object
             try {
@@ -210,8 +365,7 @@ public class MainActivity extends AppCompatActivity {
             } catch (android.content.ActivityNotFoundException anfe) {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
             }
-        }catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -242,6 +396,7 @@ public class MainActivity extends AppCompatActivity {
 
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -259,11 +414,14 @@ public class MainActivity extends AppCompatActivity {
                 String appPackageName = "com.instagram.android"; // getPackageName() from Context or Activity object
                 try {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+
                 } catch (android.content.ActivityNotFoundException anfe) {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+
             }
         }
     }
