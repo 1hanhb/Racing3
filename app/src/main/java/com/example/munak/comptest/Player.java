@@ -1,17 +1,9 @@
 package com.example.munak.comptest;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-
-import static android.R.id.list;
-
 /**
  * Created by Munak on 2017. 3. 29..
  */
+
 
 public class Player {
     private String name;
@@ -33,13 +25,17 @@ public class Player {
         this.password = password;
     }
 
+    public Player(){
+
+    }
+
     public Player(String email, String password){
         this.email = email;
         this.password = password;
     }
 
-    public Player(){
-
+    public Player(String email){
+        this.email = email;
     }
 
     public Player(Player p){
@@ -55,6 +51,7 @@ public class Player {
         useSleepinessCenter = p.getUseSleepinessCenter();
     }
 
+
     public void getData(){
         this.totalScore = InGameStatus.getTotalScore();
 
@@ -64,99 +61,17 @@ public class Player {
         this.useSleepinessCenter = InGameStatus.getUseSleepinessCenter();
     }
 
-    public void writeData(){
-        FileOutputStream fout = null;
-        ObjectOutputStream oos = null;
+    public void getData(Player p){
+        name = p.getName();
+        email = p.getEmail();
+        password = p.getPassword();
 
-        Player player = new Player(this);
+        totalScore = p.getTotalScore();
 
-        ArrayList list = new ArrayList();
-
-        getData();
-        list.add(player);
-
-        /*
-        Book b1 = new Book("a0001","자바완성","홍길동",10000);
-        Book b2 = new Book("a0002","스트럿츠","김유신",20000);
-        Book b3 = new Book("a0003","기초 EJB","김성박",25000);
-
-        list.add(b1);
-        list.add(b2);
-        list.add(b3);
-        */
-
-        try {
-            fout = new FileOutputStream("datalist.dat");
-            oos = new ObjectOutputStream(fout);
-
-            oos.writeObject(list);
-            oos.reset();
-        }catch(Exception e){
-
-        }finally{
-            try{
-                oos.close();
-                fout.close();
-            }catch(Exception ioe){}
-        }
-    }
-
-    boolean isThisEmail(String email){
-        if(this.email.equals(email))
-            return true;
-        else
-            return false;
-    }
-
-    public void readData(){
-        FileInputStream fin = null;
-        ObjectInputStream ois = null;
-        Player player = new Player();
-        try{
-            int i = 0;
-            fin = new FileInputStream("datalist.dat");
-            ois = new ObjectInputStream(fin);
-
-            ArrayList list = (ArrayList)ois.readObject();
-
-
-            //datalist에서 email을 통해 데이터 얻어오기
-            while(true){
-                if(!list.isEmpty()){
-                    player = (Player)list.get(i);
-                    if(player.isThisEmail(email)) { //이메일을 비교하여 같은경우 break
-                        break;
-                    }
-                }else {//list가 빈경우 break
-                    break;
-                }
-                i++;
-            }
-
-            /*
-            Book b1 = (Book)list.get(0);
-            Book b2 = (Book)list.get(1);
-            Book b3 = (Book)list.get(2);
-            */
-
-
-        }catch(Exception ex){
-
-        }finally{
-            try{
-                ois.close();
-                fin.close();
-            }catch(IOException ioe){}
-        }
-
-        this.name = player.getName();
-        this.totalScore = player.getTotalScore();
-
-        this.violationAccel = player.getViolationAccel();
-        this.violationVelocity = player.getViolationVelocity();
-        this.violationKal = player.getViolationKal();
-        this.useSleepinessCenter = player.getUseSleepinessCenter();
-
+        violationAccel = p.getViolationAccel();
+        violationVelocity = p.getViolationVelocity();
+        violationKal = p.getViolationKal();
+        useSleepinessCenter = p.getUseSleepinessCenter();
     }
 
     public String getName(){return name;}
@@ -169,5 +84,6 @@ public class Player {
     public int getViolationVelocity(){return violationAccel;}
     public int getViolationKal(){return violationAccel;}
     public int getUseSleepinessCenter(){return violationAccel;}
+
 
 }

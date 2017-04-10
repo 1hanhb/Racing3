@@ -57,10 +57,20 @@
 
         <activity
             android:name=".RecordActivity">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity">
+            </meta-data>
         </activity>
 
         <activity
             android:name=".RankActivity">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity">
+            </meta-data>
         </activity>
 
         <meta-data
