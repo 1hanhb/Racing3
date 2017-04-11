@@ -57,10 +57,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private static final int REQUEST_EXTERNAL_STORAGE_CODE = 1;
     boolean permissionCheck = false;
 
+    String email;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Intent LoginToMainIntent = getIntent();
+        email = LoginToMainIntent.getStringExtra("keyEmail");
 
         //START
         ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
@@ -93,8 +98,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mainEditButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, EditActivity.class);
-                startActivity(intent);
+                Intent MainToEditIntent = new Intent(MainActivity.this, EditActivity.class);
+                MainToEditIntent.putExtra("keyEmail",email);
+                startActivity(MainToEditIntent);
             }
         });
 
@@ -127,8 +133,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mainRecordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent2 = new Intent(MainActivity.this, RecordActivity.class);
-                startActivity(intent2);
+                Intent MainToRecordIntent = new Intent(MainActivity.this, RecordActivity.class);
+                MainToRecordIntent.putExtra("keyEmail",email);
+                startActivity(MainToRecordIntent);
             }
         });
 
@@ -137,8 +144,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mainRankButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent3 = new Intent(MainActivity.this, RankActivity.class);
-                startActivity(intent3);
+                Intent MainToRankIntent = new Intent(MainActivity.this, RankActivity.class);
+                MainToRankIntent.putExtra("keyEmail",email);
+                startActivity(MainToRankIntent);
             }
         });
 

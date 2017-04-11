@@ -21,30 +21,41 @@ public class LoginActivity extends AppCompatActivity {
     SQLiteDatabase db;
     boolean createdDB = false;
 
+    EditText editTextId, editTextPassword;
+    String email;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        Intent intent = new Intent(this, SplashActivity.class);
-        startActivity(intent);
+        Intent splashIntent = new Intent(LoginActivity.this, SplashActivity.class);
+        startActivity(splashIntent);
+
+        Intent signUpToLoginIntent = getIntent();
+        email = signUpToLoginIntent.getStringExtra("keyEmail");
+        if(email != null) {
+            EditText editTextId = (EditText) findViewById(R.id.login_id);
+            editTextId.setText(email);
+        }
 
         Button sign_in_button = (Button) findViewById(R.id.login_button_sign_in);
         sign_in_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                EditText editText1 = (EditText) findViewById(R.id.login_id);
-                EditText editText2 = (EditText) findViewById(R.id.login_password);
+                editTextId = (EditText) findViewById(R.id.login_id);
+                editTextPassword = (EditText) findViewById(R.id.login_password);
 
-                String id = editText1.getText().toString();
-                String password = editText2.getText().toString();
+                String id = editTextId.getText().toString();
+                String password = editTextPassword.getText().toString();
 
                 Player player = new Player(id, password);
 
                 if(loginCheck(player)){
-                    Intent intent1 = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent1);
+                    Intent LoginToMainIntent = new Intent(LoginActivity.this, MainActivity.class);
+                    LoginToMainIntent.putExtra("keyEmail",email);
+                    startActivity(LoginToMainIntent);
                 }
             }
         });

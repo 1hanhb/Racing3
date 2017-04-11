@@ -1,5 +1,6 @@
 package com.example.munak.comptest;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -49,6 +50,9 @@ public class SignUpActivity extends AppCompatActivity {
                 createDatabase(DBNAME);
                 if(insertData(PLAYERTABLE,player)) {
                     queryData();
+                    Intent signUpToLoginIntent = new Intent(SignUpActivity.this, LoginActivity.class);
+                    signUpToLoginIntent.putExtra("keyEmail",email);
+                    startActivity(signUpToLoginIntent);
                 }
             }
         });

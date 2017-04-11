@@ -20,15 +20,15 @@
 
             <ImageView
                 android:id="@+id/editProfileEdge"
-                android:layout_width="140dp"
-                android:layout_height="140dp"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 android:layout_gravity="center"
-                android:src="@drawable/edge_icon"/>
+                android:src="@drawable/rank_img_bronze"/>
 
             <ImageView
                 android:id="@+id/editProfile"
-                android:layout_width="130dp"
-                android:layout_height="130dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_gravity="center"
                 android:src="@drawable/emma2"/>
 
