@@ -17,10 +17,12 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.AudioManager;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Message;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -46,6 +48,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.TimerTask;
+import java.util.Timer;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
@@ -109,6 +113,32 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mainStartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                Racing racing = new Racing();
+
+                InGameThread inGameThread = new InGameThread();
+                InGameStatus.setStart(true);
+                inGameThread.start();
+                //racing.start();
+
+                /*try {
+                    InGameStatus.setStart(true);
+                } catch(Exception e) {
+                    Toast.makeText(MainActivity.this, "test1", Toast.LENGTH_SHORT).show();
+                }
+
+                try {
+                    inGameThread.start();
+                } catch(Exception e) {
+                    Toast.makeText(MainActivity.this, "test2", Toast.LENGTH_SHORT).show();
+                }
+
+                try {
+                    racing.start();
+                } catch(Exception e) {
+                    Toast.makeText(MainActivity.this, "test3", Toast.LENGTH_SHORT).show();
+                }*/
+
 
             }
         });
@@ -224,7 +254,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     class InGameThread extends Thread{
         public void run(){
-
+            //Toast.makeText(MainActivity.this, "ingamethread 실행", Toast.LENGTH_SHORT).show();
             //급가속 급감속에 따라 점수 차감 (-50점)
             //속도를 측정하고 위반하면 점수 차감 (-10점) / 적정속도일 경우 +1점 -> 제한속도 불러오기
             //졸음쉼터 (+1점) -> 졸음쉼터 위치 불러오기
@@ -465,6 +495,94 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     }
                 }
                 break;
+        }
+    }
+
+    //
+    public class Racing extends Thread implements TextToSpeech.OnInitListener{
+        int count=0;
+        int stop=0;
+        boolean myWin = false;
+        int myScore=0;
+        int yourScore=0;
+        Player player;
+        TextToSpeech ttsClient;
+
+        public void run() {
+            player = new Player(email);
+            ttsClient = new TextToSpeech(getApplicationContext(),this);
+
+            speakTTS("Start the game now");
+
+
+            while(true){
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                player.getData();
+                yourScore = yourScore + (int)((player.getTotalScore()-myScore) * Math.random() * 2);
+                myScore = player.getTotalScore();
+
+                if(count == 5){
+                    //본인 스코어, 상대 스코어 음성으로
+                    stop++;
+
+                    if(stop==20) {
+                        if(myWin) {
+                            speakTTS("game is over. you are winner");
+                        }
+                        else {
+                            speakTTS("game is over. you are loser");
+                        }
+
+                        InGameStatus.setStart(false);
+                        break;
+                    }
+
+                }
+                else {
+                    //역전시 음성
+                    if(myWin && (myScore<yourScore)) {//본인이 이기고있다가 역전당한경우
+                        speakTTS("You have less score");
+                    }
+                    else if(myScore == yourScore) {//동점이 된 경우
+                        speakTTS("you have equal score");
+                    }
+                    else if(!myWin && (myScore > yourScore)) {//본인이 지고있다가 역전한경우
+                        speakTTS("You reversed the game");
+                    }
+                }
+                count = (count+1)%6;
+            }
+
+        }
+
+        @Override
+        public void onInit(int i) {
+            //ttsClient.speak("TTS",TextToSpeech.QUEUE_FLUSH, null);
+        }
+
+        public void speakTTS(String text) {
+            AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
+            ttsClient.speak(text, TextToSpeech.QUEUE_FLUSH,null);
+/*
+            int result = am.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK);
+
+            if(result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED){
+                int ttsResult = ttsClient.speak(text, TextToSpeech.QUEUE_FLUSH,null);
+
+                TimerTask task = new TimerTask(){
+                    @Override
+                    public void run(){
+                        AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
+                        am.abandonAudioFocus(null);
+                    }
+                };
+                new Timer().schedule(task, 3000);
+            }*/
         }
     }
 }

@@ -1,7 +1,11 @@
 package com.example.munak.comptest;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.net.Uri;
@@ -13,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -53,6 +58,17 @@ public class EditActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 doTakeAlbum();
+            }
+        });
+
+        Button editRotate = (Button) findViewById(R.id.editRotate);
+        editRotate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Drawable tempD = iv_UserPhoto.getDrawable();
+                Bitmap bitmap = ((BitmapDrawable)tempD).getBitmap();
+                bitmap = rotate(bitmap, 90);
+                iv_UserPhoto.setImageBitmap(bitmap);
             }
         });
     }
@@ -116,6 +132,7 @@ public class EditActivity extends AppCompatActivity {
 
                 if(extras != null) {
                     Bitmap photo = extras.getParcelable("data");
+
                     iv_UserPhoto.setImageBitmap(photo);
 
                     storeCropImage(photo, filePath);
@@ -129,6 +146,32 @@ public class EditActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    public Bitmap rotate(Bitmap bitmap, int degrees)
+    {
+        if(degrees != 0 && bitmap != null)
+        {
+            Matrix m = new Matrix();
+            m.setRotate(degrees, (float) bitmap.getWidth() / 2,
+                    (float) bitmap.getHeight() / 2);
+
+            try
+            {
+                Bitmap converted = Bitmap.createBitmap(bitmap, 0, 0,
+                        bitmap.getWidth(), bitmap.getHeight(), m, true);
+                if(bitmap != converted)
+                {
+                    bitmap.recycle();
+                    bitmap = converted;
+                }
+            }
+            catch(OutOfMemoryError ex)
+            {
+                // 메모리가 부족하여 회전을 시키지 못할 경우 그냥 원본을 반환합니다.
+            }
+        }
+        return bitmap;
     }
 
     private void storeCropImage(Bitmap bitmap, String filePath) {
