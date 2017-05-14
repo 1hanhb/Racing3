@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -25,12 +26,16 @@ import android.os.Message;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.facebook.appevents.AppEventsLogger;
@@ -63,11 +68,65 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     String email;
 
+    //Slide Menu
+    private final String[] navItems = {"Brown", "Cadet Blue", "Dark Olive Green", "Dark Orange", "Golden Rod"};
+    private ListView lvNavList;
+    private LinearLayout flContainer;
+    private DrawerLayout dlDrawer;
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+
+        finish();
+
+        android.os.Process.killProcess(android.os.Process.myPid());
+
+        /*if (dlDrawer.isDrawerOpen(lvNavList)) {
+            dlDrawer.closeDrawer(lvNavList);
+
+        } else {
+            super.onBackPressed();
+        }*/
+    }
+
+    /*public void onBackPressed() {
+        // TODO Auto-generated method stub
+        // super.onBackPressed(); //지워야 실행됨
+
+        Builder d = new AlertDialog.Builder(this);
+
+        d.setMessage("정말 종료하시겠습니까?");
+
+        d.setPositiveButton("예", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+                // process전체 종료
+                finish();
+            }
+        });
+
+        d.setNegativeButton("아니요", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        d.show();
+    }*/
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Slide Menu
+        lvNavList = (ListView)findViewById(R.id.lv_activity_main_nav_list);
+        flContainer = (LinearLayout)findViewById(R.id.fl_activity_main_container);
+
+        //keyE-Mail
         Intent LoginToMainIntent = getIntent();
         email = LoginToMainIntent.getStringExtra("keyEmail");
 

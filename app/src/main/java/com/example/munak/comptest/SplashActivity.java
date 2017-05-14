@@ -1,5 +1,6 @@
 package com.example.munak.comptest;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
@@ -23,6 +24,8 @@ public class SplashActivity extends FragmentActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+                startActivity(intent);
                 finish();
             }
         }, 3000);

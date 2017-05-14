@@ -6,87 +6,138 @@
     android:gravity="center">
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:background="#00ffffff"
+        android:orientation="vertical"
         android:layout_gravity="center"
         android:gravity="center">
-
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="50dp">
-
-            <ImageView
-                android:id="@+id/editProfileEdge"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_gravity="center"
-                android:src="@drawable/rank_img_gold"/>
-
-            <ImageView
-                android:id="@+id/editProfile"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:src="@drawable/emma2"/>
-
-        </FrameLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:gravity="center">
 
-            <Button
-                android:id="@+id/editPicture"
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/editProfileEdge"
+                    android:layout_width="180dp"
+                    android:layout_height="180dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/rank_img_gold"/>
+
+                <ImageView
+                    android:id="@+id/editProfile"
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/emma2"/>
+
+            </FrameLayout>
+
+            <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="take a picture"/>
-
-            <Button
-                android:id="@+id/editUpload"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Upload"/>
-
-            <Button
-                android:id="@+id/editRotate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="rotate"/>
+                android:hint="myname"/>
 
         </LinearLayout>
 
     </LinearLayout>
 
+
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
-        android:orientation="horizontal"
-        android:layout_gravity="center">
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:gravity="center"
+        android:background="#FFFFFFFF"
+        android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/editPicture"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="name : "
-            android:textSize="20dp"/>
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="myname"/>
+            android:background="#00ffffff"
+            android:text="Take a Picture" />
 
     </LinearLayout>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="edit"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="#00ffffff"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:gravity="center"
+        android:background="#FFFFFFFF"
+        android:orientation="vertical">
 
+        <Button
+            android:id="@+id/editUpload"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="#00ffffff"
+            android:text="Take a Picture" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="#00ffffff"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:gravity="center"
+        android:background="#FFFFFFFF"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/editRotate"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/circular_icon"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="#00ffffff"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:gravity="center"
+        android:background="#FFFFFFFF"
+        android:orientation="vertical">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="#00ffffff"
+            android:text="Edit" />
+
+    </LinearLayout>
 </LinearLayout>

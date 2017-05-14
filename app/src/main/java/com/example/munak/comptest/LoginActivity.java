@@ -29,9 +29,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        Intent splashIntent = new Intent(LoginActivity.this, SplashActivity.class);
-        startActivity(splashIntent);
-
         Intent signUpToLoginIntent = getIntent();
         email = signUpToLoginIntent.getStringExtra("keyEmail");
         if(email != null) {
