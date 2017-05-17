@@ -22,7 +22,8 @@
 
             <FrameLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
 
                 <ImageView
                     android:id="@+id/editProfileEdge"
@@ -40,15 +41,14 @@
 
             </FrameLayout>
 
+        </LinearLayout>
+
             <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="myname"/>
 
-        </LinearLayout>
-
     </LinearLayout>
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -89,7 +89,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="#00ffffff"
-            android:text="Take a Picture" />
+            android:text="Go To Album" />
 
     </LinearLayout>
 
