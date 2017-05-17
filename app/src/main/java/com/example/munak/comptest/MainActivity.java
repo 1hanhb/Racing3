@@ -7,6 +7,7 @@ import android.content.Intent;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ShapeDrawable;
@@ -61,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     Sensor accelerometer;
     SensorManager sensorManager;
     LocationManager locationManager;
+
+    boolean isStart = false;
 
     //permissionRequestCode
     private static final int REQUEST_EXTERNAL_STORAGE_CODE = 1;
@@ -322,16 +325,23 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             while (InGameStatus.getStart()) {
 
                 try{
+
+                    InGameStatus.setPrevVelocity(InGameStatus.getCurrVelocity());
+                    InGameStatus.setCurrVelocity(InGameStatus.getVelocity());
+                    InGameStatus.setAcceleration(InGameStatus.getCurrVelocity()-InGameStatus.getPrevVelocity());
+                    //가속도지정
+
                     Thread.sleep(1000);
 
                     //1. 급가속
-                    //급가속 : 초당 11km/h ~ 25km/h를 넘었을 때 점수 차감
-                    if( 3.05f <=InGameStatus.getAccelerationZ() ||  InGameStatus.getAccelerationZ() <=7.9f ) {
+                    // 급가속 : 초당 11km/h ~ 25km/h를 넘었을 때 점수 차감
+                    //
+                    if( 3.05f <=InGameStatus.getAcceleration() &&  InGameStatus.getAcceleration() <=7.9f ) {
                         InGameStatus.setTotalScore(0, -50); // 점수 50 감소
                         InGameStatus.setViolationAccel(1); //가속도 위반 횟수 1 증가
                     }
                     //급감속 : 초당 7.5km/h ~ 40km/h 감속 운행한 경우
-                    else if( InGameStatus.getAccelerationZ() <=- 2.08f || 11.1f<= InGameStatus.getAccelerationZ()  ) {
+                    else if( InGameStatus.getAcceleration() <=- 2.08f && -11.1f<= InGameStatus.getAcceleration()  ) {
                         InGameStatus.setTotalScore(0, -50); // 점수 50 감소
                         InGameStatus.setViolationAccel(1); //가속도 위반 횟수 1 증가
                     }
@@ -339,13 +349,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     //2. 과속
                     //현재 위치를 통해 도로 별 제한속도를 구한다(공공데이터 사용).
                     //임시로 110km/h로 지정하였음.
-                    if(110.0f <= InGameStatus.getVelocity()){
+                    // 110km/h = 30.5555m/s
+                    if(30.5555f <= InGameStatus.getVelocity()){
 
                         InGameStatus.setTotalScore(0, -10); //점수 10 감소
                         InGameStatus.setViolationVelocity(1); // 속도 위반 횟수 1 증가
 
                     }
-                    else if(15.0f <= InGameStatus.getVelocity()){
+                    //15km/h = 4.1666 m/s
+                    else if(4.16666f <= InGameStatus.getVelocity()){
                         //규정 속도롤 지켰을 때는 1초마다 점수가 올라간다.
                         InGameStatus.setTotalScore(0, +1);
                     } // 위의 상황이 아닌 경우 점수 변동 없음
@@ -373,9 +385,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                             InGameStatus.setKalCount(-1);
                         }
 
-                        //총 칼치기 카운트가 10 이상인 경우 칼치기로 간주하고, 점수 차감 및 칼치기 횟수 증가
+                        //총 칼치기 카운트가 10 이상인 경우 칼치기로 간주하고, 칼치기 횟수 증가
                         if(10 <= InGameStatus.getKalCount()){
-                            InGameStatus.setTotalScore(0, -50);
                             InGameStatus.setViolationKal(1);
                         }
 
@@ -564,19 +575,27 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         boolean myWin = false;
         int myScore=0;
         int yourScore=0;
+
+        final private String DBNAME = "playerinfo.db";
+        final private String PLAYERTABLE = "player";
+        SQLiteDatabase db;
+        boolean createdDB = false;
+
         Player player;
         TextToSpeech ttsClient;
 
         public void run() {
-            player = new Player(email);
             ttsClient = new TextToSpeech(getApplicationContext(),this);
 
-            speakTTS("Start the game now");
+            speakTTS("착한 레이싱을 시작하겠습니다");
+
+            player = new Player(email);
+
 
 
             while(true){
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(10000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -585,52 +604,69 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 yourScore = yourScore + (int)((player.getTotalScore()-myScore) * Math.random() * 2);
                 myScore = player.getTotalScore();
 
-                if(count == 5){
+                if(count==2){
                     //본인 스코어, 상대 스코어 음성으로
-                    stop++;
+                    int dif = myScore - yourScore;
+                    speakTTS("당신의 점수는 " + myScore +"입니다");
+                    if(dif>0)
+                        speakTTS("상대방보다 " + dif + "점 높습니다");
+                    else if (dif ==0)
+                        speakTTS("상대방과 동점입니다");
+                    else {
+                        dif = -1 * dif;
+                        speakTTS("상대방보다 " + dif + "점 낮습니다");
+                    }
 
-                    if(stop==20) {
+
+                    stop++;
+                    if(stop==4){
                         if(myWin) {
-                            speakTTS("game is over. you are winner");
+                            createDatabase(DBNAME);
+                            updateData(player,true);
+                            speakTTS("게임에 승리하였습니다");
                         }
                         else {
-                            speakTTS("game is over. you are loser");
+                            updateData(player,false);
+                            speakTTS("게임에 패배하였습니다");
                         }
 
                         InGameStatus.setStart(false);
+                        isStart = false;
                         break;
                     }
 
-                }
-                else {
-                    //역전시 음성
-                    if(myWin && (myScore<yourScore)) {//본인이 이기고있다가 역전당한경우
-                        speakTTS("You have less score");
-                    }
-                    else if(myScore == yourScore) {//동점이 된 경우
-                        speakTTS("you have equal score");
-                    }
-                    else if(!myWin && (myScore > yourScore)) {//본인이 지고있다가 역전한경우
-                        speakTTS("You reversed the game");
-                    }
-                }
-                count = (count+1)%6;
-            }
 
+                }else{
+                    //역전시 음성
+                    if(myScore == yourScore ){//동점이 된 경우
+                        speakTTS("동점입니다");
+                    }else if(myWin && (myScore<yourScore)){//본인이 이기고있다가 역전당한경우
+                        speakTTS("상대방이 " + yourScore+ "점으로 역전당했습니다");
+                    }else if(!myWin && (myScore > yourScore) ){//본인이 지고있다가 역전한경우
+                        speakTTS("당신은 " + myScore + "점으로 역전했습니다");
+                        myWin = true;
+                    }
+
+
+                }
+                count = (count+1)%3;
+            }
         }
 
+
+
         @Override
-        public void onInit(int i) {
+        public void onInit(int i){
             //ttsClient.speak("TTS",TextToSpeech.QUEUE_FLUSH, null);
         }
 
-        public void speakTTS(String text) {
+
+        private void speakTTS(String text){
             AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
-            ttsClient.speak(text, TextToSpeech.QUEUE_FLUSH,null);
-/*
+
             int result = am.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK);
 
-            if(result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED){
+            if( result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED){
                 int ttsResult = ttsClient.speak(text, TextToSpeech.QUEUE_FLUSH,null);
 
                 TimerTask task = new TimerTask(){
@@ -641,7 +677,79 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     }
                 };
                 new Timer().schedule(task, 3000);
-            }*/
+            }
+
+        }
+
+
+
+
+        //db 생성
+        private void createDatabase(String name){
+            try {
+                db = openOrCreateDatabase(name, MODE_ENABLE_WRITE_AHEAD_LOGGING,null);
+                createdDB = true;
+                try {
+                    if(createdDB) {
+                        createTable(PLAYERTABLE);
+                    }
+                } catch(Exception e){}
+            } catch(Exception ex) {}
+        }
+
+        //table 생성
+        private void createTable(String name) {
+            if(createdDB) {
+                try {
+                    db.execSQL("create table " + name + "("
+                            + "email text primary key,"
+                            + "name text,"
+                            + "password text,"
+                            + "totalScore integer,"
+                            + "violationAccel integer,"
+                            + "violationVelocity integer,"
+                            + "violationKal integer,"
+                            + "useSleepinessCenter integer,"
+                            + "mmr integer,"
+                            + "conpetitionCount integer,"
+                            + "winCount integer)"
+                    );
+                }catch(Exception e){}
+            }
+        }
+
+        //data 변경하기
+        private void updateData(Player p, boolean winner){
+            if(createdDB && winner){
+                String sql = "UPDATE " + PLAYERTABLE
+                        + " SET totalScore = totalScore + '" + p.getTotalScore()
+                        + "', violationAccel = violationAccel + '" + p.getViolationAccel()
+                        + "', violationVelocity = violationVelocity + '" + p.getViolationVelocity()
+                        + "', violationKal = violationKal +'" + p.getViolationKal()
+                        + "', useSleepinessCenter = useSleepinessCenter +'" + p.getUseSleepinessCenter()
+                        + "', mmr = mmr +'" + 10
+                        + "', conpetitionCount = conpetitionCount + '" + 1
+                        + "', winCount = winCount + '" + 1 + "'"
+                        + " WHERE email = '"+p.getEmail() +"';";
+                try {
+                    db.execSQL(sql);
+                }catch(Exception e){}
+            }
+            else if(createdDB && !winner){
+                String sql = "UPDATE " + PLAYERTABLE
+                        + " SET totalScore = totalScore + '" + p.getTotalScore()
+                        + "', violationAccel = violationAccel + '" + p.getViolationAccel()
+                        + "', violationVelocity = violationVelocity + '" + p.getViolationVelocity()
+                        + "', violationKal = violationKal +'" + p.getViolationKal()
+                        + "', useSleepinessCenter = useSleepinessCenter +'" + p.getUseSleepinessCenter()
+                        + "', mmr = mmr -'" + 5
+                        + "', conpetitionCount = conpetitionCount + '" + 1
+                        + "', winCount = winCount + '" + 0 + "'"
+                        + " WHERE email = '"+p.getEmail() +"';";
+                try {
+                    db.execSQL(sql);
+                }catch(Exception e){}
+            }
         }
     }
 }

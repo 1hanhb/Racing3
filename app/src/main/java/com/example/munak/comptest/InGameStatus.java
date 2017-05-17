@@ -11,7 +11,10 @@ class InGameStatus {
 
     //게임 내에서 실시간으로 측정되는 값들
     private static int totalScore =0; // 총 점수
-    private static double velocity = 0.0f; //속도
+    private static double velocity = 0.0f; //속도 (센서에 의해 측정
+    private static double currVelocity = 0.0f; //(5.14.추가됨) 현재속도(가속도 구하는 데 필요)
+    private static double prevVelocity = 0.0f; //(5.14.추가됨) 이전속도(가속도 구하는 데 필요)
+    private static double acceleration = 0.0f; //(5.14. 추가됨) 가속도
     private static double accelerationY = 0.0f; // 가속도 (옆 방향)
     private static double accelerationZ = 0.0f; // 가속도 (앞 방향)
     private static double locationX = 0.0f; // 현재 위치(위도)
@@ -31,6 +34,13 @@ class InGameStatus {
         accelerationY = y;
         accelerationZ = z;
     }
+
+    //5.14. 추가됨
+    public static synchronized void setCurrVelocity(double v){ currVelocity = v;}
+
+    public static synchronized void setPrevVelocity(double v){ prevVelocity = v;}
+
+    public static synchronized void setAcceleration(double a){acceleration = a;}
 
     public static synchronized void setVelocity(double v){
         velocity = v;
@@ -79,6 +89,14 @@ class InGameStatus {
     }
 
     //getters
+
+    //5.14. 추가됨
+    public static synchronized double getCurrVelocity() { return currVelocity; }
+
+    public static synchronized double getPrevVelocity(){ return prevVelocity; }
+
+    public static synchronized double getAcceleration() { return acceleration; }
+
     public static synchronized int getTotalScore(){
         return totalScore;
     }

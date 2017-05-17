@@ -3,81 +3,94 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="bottom">
+    android:gravity="top">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="LOGO"
-        android:textSize="100dp"
-        android:gravity="center"/>                  <!-- temp_logo -->
+    <ImageView
+        android:layout_width="330dp"
+        android:layout_height="220dp"
+        android:layout_gravity="left"
+        android:background="@drawable/login_logo2"/>  <!-- temp_logo -->
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="30dp"
-        android:gravity="center">
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="40dp"
+        android:orientation="vertical"
+        android:gravity="left">
 
-        <ImageView
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:src="@drawable/tempicon"/>      <!-- temp_icon -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            android:text="E - mail address"
+            android:textColor="#FF888888"/>      <!-- temp_icon -->
 
         <EditText
             android:id="@+id/login_id"
-            android:layout_width="250dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
-            android:paddingLeft="15dp"
+            android:paddingLeft="5dp"
             android:hint="ID(E-mail)"
-            android:textSize="20dp"/>
+            android:textSize="15dp"/>
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="15dp"
-        android:gravity="center">
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:orientation="vertical"
+        android:layout_marginTop="25dp"
+        android:gravity="left">
 
-        <ImageView
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:src="@drawable/tempicon"/>      <!-- temp_icon -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="15dp"
+            android:text="Password"
+            android:textColor="#FF888888"/>      <!-- temp_icon -->
 
         <EditText
             android:id="@+id/login_password"
-            android:layout_width="250dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
-            android:paddingLeft="15dp"
-            android:hint="password"
-            android:textSize="20dp"/>
+            android:paddingLeft="5dp"
+            android:hint="Password"
+            android:textSize="15dp"/>
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/login_button_sign_in"
-        android:layout_width="300dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:text="SIGN IN"
-        android:textColor="#FFffffff"
-        android:textSize="20dp"
-        android:background="#FF0000ff"
-        android:layout_gravity="center"/>
+        android:layout_marginTop="50dp"
+        android:orientation="horizontal"
+        android:gravity="center">
 
-    <Button
-        android:id="@+id/login_button_sign_up"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
-        android:layout_marginTop="90dp"
-        android:text="SIGN UP"
-        android:textColor="#FF0000ff"
-        android:textSize="20dp"
-        android:background="#FFffffff"
-        android:layout_gravity="center"/>
+        <Button
+            android:id="@+id/login_button_sign_in"
+            android:layout_width="125dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="35dp"
+            android:text="SIGN IN"
+            android:textColor="#FFffffff"
+            android:textSize="15dp"
+            android:background="#FF5cceb3"/>
+
+        <Button
+            android:id="@+id/login_button_sign_up"
+            android:layout_width="125dp"
+            android:layout_height="40dp"
+            android:text="SIGN UP"
+            android:textColor="#FFffffff"
+            android:textSize="15dp"
+            android:background="#FFcbcbcb"/>
+
+    </LinearLayout>
+
 </LinearLayout>

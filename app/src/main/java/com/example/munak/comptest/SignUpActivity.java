@@ -114,6 +114,7 @@ public class SignUpActivity extends AppCompatActivity {
     private void createDatabase(String name){
         try {
             db = openOrCreateDatabase(name, MODE_ENABLE_WRITE_AHEAD_LOGGING,null);
+            Toast.makeText(this, "db생성 성공", Toast.LENGTH_SHORT).show();
             createdDB = true;
             try {
                 if(createdDB) {
@@ -128,18 +129,22 @@ public class SignUpActivity extends AppCompatActivity {
     //table 생성
     private void createTable(String name) {
         if(createdDB) {
-            db.execSQL("create table " + name + "("
-                    + "email text primary key,"
-                    + "name text,"
-                    + "password text,"
-                    + "totalScore integer,"
-                    + "violationAccel integer,"
-                    + "violationVelocity integer,"
-                    + "violationKal integer,"
-                    + "useSleepinessCenter integer);"
-            );
+            try {
+                db.execSQL("create table " + name + "("
+                        + "email text primary key,"
+                        + "name text,"
+                        + "password text,"
+                        + "totalScore integer,"
+                        + "violationAccel integer,"
+                        + "violationVelocity integer,"
+                        + "violationKal integer,"
+                        + "useSleepinessCenter integer,"
+                        + "mmr integer,"
+                        + "conpetitionCount integer,"
+                        + "winCount integer)"
+                );
+            }catch(Exception e){}
         }
-
     }
 
     //table에 data 넣기
@@ -147,7 +152,7 @@ public class SignUpActivity extends AppCompatActivity {
         if(createdDB) {
             try {
                 String sql ="insert into " + name
-                        + "(email, name, password, totalScore, violationAccel, violationVelocity, violationKal, useSleepinessCenter) values("
+                        + "(email, name, password, totalScore, violationAccel, violationVelocity, violationKal, useSleepinessCenter, mmr, conpetitionCount, winCount ) values("
                         + "'" + p.getEmail() + "',"
                         + "'" + p.getName() + "',"
                         + "'" + p.getPassword() + "',"
@@ -155,7 +160,10 @@ public class SignUpActivity extends AppCompatActivity {
                         + "'" + p.getViolationAccel() + "',"
                         + "'" + p.getViolationVelocity() + "',"
                         + "'" + p.getViolationKal() + "',"
-                        + "'" + p.getUseSleepinessCenter() + "');";
+                        + "'" + p.getUseSleepinessCenter() + "',"
+                        + "'" + 0 + "',"
+                        + "'" + 0 + "',"
+                        + "'" + 0 + "')";
                 db.execSQL(sql);
                 return true;
             } catch(Exception e) {
@@ -173,7 +181,8 @@ public class SignUpActivity extends AppCompatActivity {
             String sql = "drop table " + tableName;
             try {
                 db.execSQL(sql);
-            }catch(Exception e){}
+                Toast.makeText(this, "테이블 제거", Toast.LENGTH_SHORT).show();
+            }catch(Exception e){Toast.makeText(this, "테이블 제거 실패", Toast.LENGTH_SHORT).show();}
         }
     }
 
@@ -197,11 +206,16 @@ public class SignUpActivity extends AppCompatActivity {
                                 + cursor.getString(4) + "/"
                                 + cursor.getString(5) + "/"
                                 + cursor.getString(6) + "/"
-                                + cursor.getString(7);
+                                + cursor.getString(7) + "/"
+                                + cursor.getInt(8)  + "/"
+                                + cursor.getInt(9) + "/"
+                                + cursor.getInt(10);
                         Toast.makeText(this, i + "번째 : " + data, Toast.LENGTH_SHORT).show();
                     }
                 }
-            }catch(Exception e){}
+            }catch(Exception e){
+                Toast.makeText(this, "query 실패", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -220,15 +234,20 @@ public class SignUpActivity extends AppCompatActivity {
     private void updateData(Player p){
         if(createdDB){
             String sql = "UPDATE " + PLAYERTABLE
-                    + " SET totalScore = totalScore + '" + p.getTotalScore()
+                    + " SET totalScore = totalScore + '" + 100
                     + "', violationAccel = violationAccel + '" + p.getViolationAccel()
                     + "', violationVelocity = violationVelocity + '" + p.getViolationVelocity()
-                    + "', violationKal = violationKal '" + p.getViolationKal()
-                    + "', useSleepinessCenter = useSleepinessCenter '" + p.getUseSleepinessCenter() + "'"
+                    + "', violationKal = violationKal +'" + p.getViolationKal()
+                    + "', useSleepinessCenter = useSleepinessCenter +'" + p.getUseSleepinessCenter()
+                    + "', mmr = mmr +'" + 10
+                    + "', conpetitionCount = conpetitionCount + '" + 10
+                    + "', winCount = winCount + '" + 10 + "'"
                     + " WHERE email = '"+p.getEmail() +"';";
             try {
                 db.execSQL(sql);
-            }catch(Exception e){}
+            }catch(Exception e){
+                Toast.makeText(this, "update 실패", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }
