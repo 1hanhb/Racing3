@@ -51,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 if(loginCheck(player)){
                     Intent LoginToMainIntent = new Intent(LoginActivity.this, MainActivity.class);
-                    LoginToMainIntent.putExtra("keyEmail",email);
+                    LoginToMainIntent.putExtra("keyEmail",id);
                     startActivity(LoginToMainIntent);
                 }
             }
