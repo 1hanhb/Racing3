@@ -10,7 +10,7 @@
         android:layout_height="220dp"
         android:layout_gravity="left"
         android:background="@drawable/login_logo2"/>
-    
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

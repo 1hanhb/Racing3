@@ -575,7 +575,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         public void run() {
             ttsClient = new TextToSpeech(getApplicationContext(),this);
-
+            try{
+                Thread.sleep(3000);
+            }catch(Exception e){}
             speakTTS("착한 레이싱을 시작하겠습니다");
 
             player = new Player(email);
@@ -612,10 +614,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         if(myWin) {
                             createDatabase(DBNAME);
                             updateData(player,true);
+                            try{
+                                Thread.sleep(3000);
+                            }catch(Exception e){}
                             speakTTS("게임에 승리하였습니다");
                         }
                         else {
+                            createDatabase(DBNAME);
                             updateData(player,false);
+                            try{
+                                Thread.sleep(3000);
+                            }catch(Exception e){}
                             speakTTS("게임에 패배하였습니다");
                         }
 
@@ -709,7 +718,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         //data 변경하기
         private void updateData(Player p, boolean winner){
-            if(createdDB && winner){
+            if(winner){
                 String sql = "UPDATE " + PLAYERTABLE
                         + " SET totalScore = totalScore + '" + p.getTotalScore()
                         + "', violationAccel = violationAccel + '" + p.getViolationAccel()
@@ -724,7 +733,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     db.execSQL(sql);
                 }catch(Exception e){}
             }
-            else if(createdDB && !winner){
+            else if(!winner){
                 String sql = "UPDATE " + PLAYERTABLE
                         + " SET totalScore = totalScore + '" + p.getTotalScore()
                         + "', violationAccel = violationAccel + '" + p.getViolationAccel()
