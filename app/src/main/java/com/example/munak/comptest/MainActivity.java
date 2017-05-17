@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     SensorManager sensorManager;
     LocationManager locationManager;
 
-    boolean isStart = false;
+        boolean isStart = false;
 
     //permissionRequestCode
     private static final int REQUEST_EXTERNAL_STORAGE_CODE = 1;
@@ -176,32 +176,21 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onClick(View view) {
 
-                Racing racing = new Racing();
+                if(isStart){
+                    Toast.makeText(MainActivity.this, "게임이 이미 실행중입니다", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    isStart = true;
+                    Toast.makeText(MainActivity.this, "game start", Toast.LENGTH_SHORT).show();
 
-                InGameThread inGameThread = new InGameThread();
-                InGameStatus.setStart(true);
-                inGameThread.start();
-                //racing.start();
-
-                /*try {
+                    Racing racing = new Racing();
+                    InGameThread inGameThread = new InGameThread();
                     InGameStatus.setStart(true);
-                } catch(Exception e) {
-                    Toast.makeText(MainActivity.this, "test1", Toast.LENGTH_SHORT).show();
-                }
 
-                try {
+
                     inGameThread.start();
-                } catch(Exception e) {
-                    Toast.makeText(MainActivity.this, "test2", Toast.LENGTH_SHORT).show();
-                }
-
-                try {
                     racing.start();
-                } catch(Exception e) {
-                    Toast.makeText(MainActivity.this, "test3", Toast.LENGTH_SHORT).show();
-                }*/
-
-
+                }
             }
         });
 

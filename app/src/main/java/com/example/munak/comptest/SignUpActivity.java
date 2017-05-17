@@ -48,6 +48,7 @@ public class SignUpActivity extends AppCompatActivity {
                 Player player = new Player(name, email, password);
 
                 createDatabase(DBNAME);
+
                 if(insertData(PLAYERTABLE,player)) {
                     queryData();
                     Intent signUpToLoginIntent = new Intent(SignUpActivity.this, LoginActivity.class);
