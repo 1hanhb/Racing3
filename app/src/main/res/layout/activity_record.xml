@@ -1,16 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center">
 
-    <TextView
+    >
+
+    <ImageView
+        android:id="@+id/title_record"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:layout_width="100dp"
+        android:layout_height="20dp"
+        android:background="@drawable/record_text"/>
+
+
+    <RelativeLayout
+        android:layout_below="@+id/title_record"
+        android:id="@+id/topOfTheRecord"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:id="@+id/recordText"
-        android:text="This page is Record Page"
-        android:textSize="10dp"/>
+        android:layout_height="100dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/top_of_the_record">
+        <ImageView
+            android:id="@+id/nameplate"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="30dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:background="@drawable/nameplate_icon"/>
 
-</LinearLayout>
+        <TextView
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/nameText"
+            android:layout_toRightOf="@+id/nameplate"
+            android:layout_width="wrap_content"
+            android:layout_height="70dp"
+            android:text="이름 : \n이메일 : "
+            android:textSize="18dp" />
+
+
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_below="@+id/topOfTheRecord"
+        android:layout_width="match_parent"
+        android:layout_height="330dp"
+        android:background="@drawable/bottom_of_the_record"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        >
+        <ImageView
+            android:id="@+id/rank_icon"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="30dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:background="@drawable/rank_icon"/>
+
+        <TextView
+            android:layout_toRightOf="@+id/rank_icon"
+            android:id="@+id/rankText"
+            android:layout_marginTop="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="계급 : "
+            android:layout_marginLeft="10dp"
+            android:textSize="25dp"/>
+
+
+        <ImageView
+            android:id="@+id/velocity_icon"
+            android:layout_below="@+id/rank_icon"
+            android:layout_marginLeft="30dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:background="@drawable/velocity_icon"/>
+
+        <TextView
+            android:layout_toRightOf="@+id/velocity_icon"
+            android:layout_below="@+id/rank_icon"
+            android:id="@+id/velocityText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="총 속도 위반 횟수 : (분)\n총 가속도 위반 횟수 : (분)\n게임 당 평균 속도 위반 횟수 : (분)\n게임 당 평균 가속도 위반 횟수 : (분)"
+            android:layout_marginLeft="10dp"
+            android:textSize="18dp"/>
+
+        <ImageView
+            android:id="@+id/sleep_icon"
+            android:layout_below="@+id/velocity_icon"
+            android:layout_marginLeft="30dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:background="@drawable/sleep_icon"/>
+
+        <TextView
+            android:layout_toRightOf="@+id/sleep_icon"
+            android:layout_below="@+id/velocity_icon"
+            android:id="@+id/sleepText"
+            android:layout_marginTop="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="총 졸음쉼터 이용 횟수 : (분)\n 게임 당 평균 졸음쉼터 이용 횟수 : (분)"
+            android:layout_marginLeft="10dp"
+            android:textSize="18dp"/>
+
+
+        <ImageView
+            android:id="@+id/violation_icon"
+            android:layout_below="@+id/sleep_icon"
+            android:layout_marginLeft="30dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:background="@drawable/violation_icon"/>
+
+        <TextView
+            android:layout_toRightOf="@+id/violation_icon"
+            android:layout_below="@+id/sleep_icon"
+            android:id="@+id/violationText"
+            android:layout_marginTop="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="총 칼치기 횟수 : (분)\n게임 당 평균 칼치기 횟수 : (분)"
+            android:layout_marginLeft="10dp"
+            android:textSize="18dp"/>
+
+
+
+    </RelativeLayout>
+
+
+
+
+
+
+</RelativeLayout>

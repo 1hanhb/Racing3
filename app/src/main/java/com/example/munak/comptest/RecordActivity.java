@@ -24,6 +24,11 @@ public class RecordActivity extends AppCompatActivity {
     SQLiteDatabase db;
     boolean createdDB = false;
 
+    TextView nameText;
+    TextView rankText;
+    TextView velocityText;
+    TextView sleepText;
+    TextView violationText;
     TextView recordText;
 
     String email;
@@ -44,7 +49,13 @@ public class RecordActivity extends AppCompatActivity {
 
         Intent MainToRecordIntent = getIntent();
         email = MainToRecordIntent.getStringExtra("keyEmail");
-        recordText = (TextView) findViewById(R.id.recordText);
+
+        nameText = (TextView) findViewById(R.id.nameText);
+        rankText = (TextView) findViewById(R.id.rankText);
+        velocityText = (TextView) findViewById(R.id.velocityText);
+        sleepText = (TextView) findViewById(R.id.sleepText);
+        violationText = (TextView) findViewById(R.id.violationText);
+
 
         createDatabase(DBNAME);
         String sql = "select * from " + PLAYERTABLE;
@@ -71,17 +82,33 @@ public class RecordActivity extends AppCompatActivity {
             }
         }
 
-        recordText.setText("name : " +  name+
-                "\nname : " +  totalScore+
-                "\nviolationAccel : " + violationAccel +
-                "\nviolationVelocity : " + violationVelocity +
-                "\nviolationKal : " + violationKal+
-                "\nuseSleepinessCenter : " +  useSleepinessCenter+
-                "\nmmr : " +  mmr+
-                "\ncompetitionCount : " +  competitionCount+
-                "\nwinCount : " +  winCount
-        );
 
+        nameText.setText("이름 : "+name+"\n이메일 : "+email);
+        //계급 구하기
+        int integerMmr = Integer.valueOf(mmr);
+        String tier;
+        if(integerMmr<100)
+            tier = "BRONZE";
+        else if(integerMmr<200)
+            tier = "SILVER";
+        else if(integerMmr<300)
+            tier ="GOLD";
+        else if(integerMmr<400)
+            tier = "PLATINUM";
+        else if(integerMmr<500)
+            tier = "MASTER";
+        else
+            tier = "ERROR";
+
+
+        nameText.setText("이름 :"+ name +"\n이메일 : "+emailFromDB);
+        rankText.setText("계급 : " + tier);
+        velocityText.setText("\n총 속도 위반 횟수 : "+ Integer.valueOf(violationVelocity)/60 +"(분)\n총 가속도 위반 횟수 : "+Integer.valueOf(violationAccel)/60+"(분)\n게임 당 평균 속도 위반 횟수 : "+
+                Integer.valueOf(violationVelocity)/Integer.valueOf(competitionCount)/60+"(분)\n게임 당 평균 가속도 위반 횟수 :"+
+                Integer.valueOf(violationAccel)/Integer.valueOf(competitionCount)/60+"(분)");
+        sleepText.setText("총 졸음쉼터 이용 횟수 : "+ Integer.valueOf(useSleepinessCenter)/60 +"(분)\n 게임 당 평균 졸음쉼터 이용 횟수 :"+
+                Integer.valueOf(useSleepinessCenter)/Integer.valueOf(competitionCount)/60 +"(분)");
+        violationText.setText("총 칼치기 횟수 : "+ Integer.valueOf(violationKal)/60 +"(분)\n게임 당 평균 칼치기 횟수 :"+Integer.valueOf(violationKal)/Integer.valueOf(competitionCount)/60+"(분)");
 
 
         //Title Bar Back Button Visible
