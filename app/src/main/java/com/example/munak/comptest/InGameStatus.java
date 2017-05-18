@@ -28,6 +28,25 @@ class InGameStatus {
     private static int violationKal = 0; //칼치기 횟수
     private static int useSleepinessCenter = 0; //졸음쉼터 이용 횟수
 
+    //initializer(5.18. 추가됨)
+    public static synchronized void initialize(){
+
+        totalScore =0; // 총 점수
+        velocity = 0.0f; //속도 (센서에 의해 측정
+        currVelocity = 0.0f; //(5.14.추가됨) 현재속도(가속도 구하는 데 필요)
+        prevVelocity = 0.0f; //(5.14.추가됨) 이전속도(가속도 구하는 데 필요)
+        acceleration = 0.0f; //(5.14. 추가됨) 가속도
+        accelerationY = 0.0f; // 가속도 (옆 방향)
+        accelerationZ = 0.0f; // 가속도 (앞 방향)
+        locationX = 0.0f; // 현재 위치(위도)
+        locationY = 0.0f; // 현재 위치(경도)
+        kalCount = 0;
+        violationAccel = 0; //가속도 위반 횟수
+        violationVelocity = 0; //속도 위반 횟수
+        violationKal = 0; //칼치기 횟수
+        useSleepinessCenter = 0; //졸음쉼터 이용 횟수
+
+    }
 
     //setters
     public static synchronized void setAcceleration(double y, double z){
