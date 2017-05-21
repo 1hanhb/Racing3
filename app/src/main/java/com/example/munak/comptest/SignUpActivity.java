@@ -47,6 +47,7 @@ public class SignUpActivity extends AppCompatActivity {
 
                 Player player = new Player(name, email, password);
 
+                deleteDatabase(DBNAME);
                 createDatabase(DBNAME);
 
                 if(insertData(PLAYERTABLE,player)) {
@@ -119,7 +120,8 @@ public class SignUpActivity extends AppCompatActivity {
             createdDB = true;
             try {
                 if(createdDB) {
-                    createTable(PLAYERTABLE);
+                    createTable();
+                    createTable2();
                 }
             } catch(Exception e){}
         } catch(Exception ex) {
@@ -128,10 +130,10 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     //table 생성
-    private void createTable(String name) {
+    private void createTable() {
         if(createdDB) {
             try {
-                db.execSQL("create table " + name + "("
+                db.execSQL("create table player ("
                         + "email text primary key,"
                         + "name text,"
                         + "password text,"
@@ -142,18 +144,32 @@ public class SignUpActivity extends AppCompatActivity {
                         + "useSleepinessCenter integer,"
                         + "mmr integer,"
                         + "conpetitionCount integer,"
-                        + "winCount integer)"
+                        + "winCount integer,"
+                        + "image blob,"
+                        + "mission integer)"
                 );
             }catch(Exception e){}
         }
     }
+    private void createTable2() {
+        if(createdDB) {
+            try {
+                db.execSQL("create table photo ("
+                        + "image blob)"
+                );
+            }catch(Exception e){}
+        }
+    }
+
 
     //table에 data 넣기
     private boolean insertData(String name,Player p){
         if(createdDB) {
             try {
                 String sql ="insert into " + name
-                        + "(email, name, password, totalScore, violationAccel, violationVelocity, violationKal, useSleepinessCenter, mmr, conpetitionCount, winCount ) values("
+                        + "(email, name, password, totalScore, violationAccel, " +
+                        "violationVelocity, violationKal, useSleepinessCenter, mmr, " +
+                        "conpetitionCount, winCount, mission ) values("
                         + "'" + p.getEmail() + "',"
                         + "'" + p.getName() + "',"
                         + "'" + p.getPassword() + "',"
@@ -164,7 +180,8 @@ public class SignUpActivity extends AppCompatActivity {
                         + "'" + p.getUseSleepinessCenter() + "',"
                         + "'" + 0 + "',"
                         + "'" + 0 + "',"
-                        + "'" + 0 + "')";
+                        + "'" + 0 + "',"
+                        + "'" + 0 +"')";
                 db.execSQL(sql);
                 return true;
             } catch(Exception e) {
@@ -175,6 +192,8 @@ public class SignUpActivity extends AppCompatActivity {
             return false;
         }
     }
+
+
 
     //table 제거
     private void removeTable(String tableName){
@@ -210,11 +229,13 @@ public class SignUpActivity extends AppCompatActivity {
                                 + cursor.getString(7) + "/"
                                 + cursor.getInt(8)  + "/"
                                 + cursor.getInt(9) + "/"
-                                + cursor.getInt(10);
+                                + cursor.getInt(10) + "/"
+                                + cursor.getString(11) + "/"
+                                + cursor.getInt(12);
                         Toast.makeText(this, i + "번째 : " + data, Toast.LENGTH_SHORT).show();
                     }
                 }
-            }catch(Exception e){
+            } catch(Exception e){
                 Toast.makeText(this, "query 실패", Toast.LENGTH_SHORT).show();
             }
         }

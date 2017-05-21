@@ -6,7 +6,11 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -32,10 +36,13 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,6 +54,19 @@ import java.util.List;
  */
 
 public class EditActivity extends AppCompatActivity {
+
+    final private String DBNAME = "playerinfo.db";
+    final private String PLAYERTABLE = "player";
+    SQLiteDatabase db;
+    boolean createdDB = false;
+
+    String email;
+
+    byte[] appIcon;
+    byte[] appIcon2;
+    byte[] tempb;
+
+    Bitmap mSaveBm;
 
     private static final int PICK_FROM_CAMERA = 0;
     private static final int PICK_FROM_ALBUM = 1;
@@ -60,6 +80,7 @@ public class EditActivity extends AppCompatActivity {
 
     private Uri mImageCaptureUri;
     private ImageView iv_UserPhoto;
+    private ImageView iv_UserPhoto2;
     private String absoultePath;
 
     @Override
@@ -67,7 +88,11 @@ public class EditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
 
-        //checkPermissions(); //권한 묻기
+        //keyE-Mail
+        Intent LoginToMainIntent = getIntent();
+        email = LoginToMainIntent.getStringExtra("keyEmail");
+
+        createDatabase(DBNAME);
 
         //Title Bar Back Button Visible
         ActionBar actionBar = getSupportActionBar();
@@ -76,6 +101,8 @@ public class EditActivity extends AppCompatActivity {
         iv_UserPhoto = (ImageView) findViewById(R.id.editProfile);
         iv_UserPhoto.setBackground(new ShapeDrawable(new OvalShape()));
         iv_UserPhoto.setClipToOutline(true);
+
+        iv_UserPhoto2 = (ImageView) findViewById(R.id.editProfile2);
 
         Button editPicture = (Button) findViewById(R.id.editPicture);
         editPicture.setOnClickListener(new View.OnClickListener() {
@@ -105,6 +132,44 @@ public class EditActivity extends AppCompatActivity {
                 iv_UserPhoto.setImageBitmap(bitmap);
             }
         });
+
+        Button editChange = (Button) findViewById(R.id.editChange);
+        editChange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                /*
+                appIcon = getByteArrayFromDrawable(iv_UserPhoto.getDrawable());
+
+                Toast.makeText(EditActivity.this, "1 : " + appIcon.toString(), Toast.LENGTH_SHORT).show();
+                try{
+                    String sql = "insert into photo values(?);";
+                    SQLiteStatement pp = db.compileStatement(sql);
+                    pp.clearBindings();
+                    pp.bindBlob(1, appIcon);
+                    pp.execute();
+                }catch(Exception e){
+                    Toast.makeText(EditActivity.this, "insert fail", Toast.LENGTH_SHORT).show();
+                }
+
+                */
+/*
+                try {
+                    String sql2 = "update photo set image = ? where email = '" + email + "'";
+                    SQLiteStatement p = db.compileStatement(sql2);
+                    p.clearBindings();
+                    p.bindBlob(1, appIcon);
+                    p.execute();
+                }catch(Exception e){
+                    Toast.makeText(EditActivity.this, "update fail", Toast.LENGTH_SHORT).show();
+                }
+*/
+                //queryData();
+            }
+        });
+
+
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -357,8 +422,6 @@ public class EditActivity extends AppCompatActivity {
 
 */
 
-
-
     public void doTakePicture() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
@@ -366,7 +429,9 @@ public class EditActivity extends AppCompatActivity {
         mImageCaptureUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(), url));
 
         intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
+
         startActivityForResult(intent, PICK_FROM_CAMERA);
+
     }
 
     public void doTakeAlbum() {
@@ -382,6 +447,7 @@ public class EditActivity extends AppCompatActivity {
         if(resultCode != RESULT_OK) {
             return;
         }
+
 
         switch (requestCode)
         {
@@ -432,6 +498,8 @@ public class EditActivity extends AppCompatActivity {
                 }
             }
         }
+
+
     }
 
 
@@ -489,6 +557,172 @@ public class EditActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+    }
+
+    //db 생성
+    private void createDatabase(String name){
+        try {
+            db = openOrCreateDatabase(name, MODE_ENABLE_WRITE_AHEAD_LOGGING,null);
+            Toast.makeText(this, "db생성 성공", Toast.LENGTH_SHORT).show();
+            createdDB = true;
+            try {
+                if(createdDB) {
+                    createTable();
+                    createTable2();
+                }
+            } catch(Exception e){}
+        } catch(Exception ex) {
+            Toast.makeText(this, "db 생성 안됨", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    //table 생성
+    private void createTable() {
+        if(createdDB) {
+            try {
+                db.execSQL("create table player ("
+                        + "email text primary key,"
+                        + "name text,"
+                        + "password text,"
+                        + "totalScore integer,"
+                        + "violationAccel integer,"
+                        + "violationVelocity integer,"
+                        + "violationKal integer,"
+                        + "useSleepinessCenter integer,"
+                        + "mmr integer,"
+                        + "conpetitionCount integer,"
+                        + "winCount integer,"
+                        + "image blob,"
+                        + "mission integer)"
+                );
+            }catch(Exception e){}
+        }
+    }
+    private void createTable2() {
+        if(createdDB) {
+            try {
+                db.execSQL("create table photo ("
+                        + "image blob)"
+                );
+            }catch(Exception e){}
+        }
+    }
+
+    //table에 data 넣기
+    private boolean insertData(String name,Player p){
+        if(createdDB) {
+            try {
+                String sql ="insert into " + name
+                        + "(email, name, password, totalScore, violationAccel, " +
+                        "violationVelocity, violationKal, useSleepinessCenter, mmr, " +
+                        "conpetitionCount, winCount, mission ) values("
+                        + "'" + p.getEmail() + "',"
+                        + "'" + p.getName() + "',"
+                        + "'" + p.getPassword() + "',"
+                        + "'" + p.getTotalScore() + "',"
+                        + "'" + p.getViolationAccel() + "',"
+                        + "'" + p.getViolationVelocity() + "',"
+                        + "'" + p.getViolationKal() + "',"
+                        + "'" + p.getUseSleepinessCenter() + "',"
+                        + "'" + 0 + "',"
+                        + "'" + 0 + "',"
+                        + "'" + 0 + "',"
+                        + "'" + 0 +"')";
+                db.execSQL(sql);
+                return true;
+            } catch(Exception e) {
+                Toast.makeText(this, "이미 존재하는 아이디입니다", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+
+
+    //table 제거
+    private void removeTable(String tableName){
+        if(createdDB){
+            String sql = "drop table " + tableName;
+            try {
+                db.execSQL(sql);
+                Toast.makeText(this, "테이블 제거", Toast.LENGTH_SHORT).show();
+            }catch(Exception e){Toast.makeText(this, "테이블 제거 실패", Toast.LENGTH_SHORT).show();}
+        }
+    }
+
+    //data 조회하기
+    private void queryData(){
+        if(createdDB) {
+            String sql = "select image from photo;";
+            try {
+                Cursor cursor = db.rawQuery(sql, null);
+
+                Toast.makeText(this, "1", Toast.LENGTH_SHORT).show();
+
+                if (cursor != null) {
+                    Toast.makeText(this, "2", Toast.LENGTH_SHORT).show();
+                    while (cursor.moveToNext()) {
+                        Toast.makeText(this, "3", Toast.LENGTH_SHORT).show();
+                        appIcon2 = cursor.getBlob(0);
+                        Toast.makeText(this, "4", Toast.LENGTH_SHORT).show();
+                        Bitmap bm= BitmapFactory.decodeByteArray(appIcon2, 0, appIcon2.length);
+                        Toast.makeText(this, "5", Toast.LENGTH_SHORT).show();
+                        iv_UserPhoto2.setImageBitmap(bm);
+                        Toast.makeText(this, "6", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            } catch(Exception e){
+                Toast.makeText(this, "query 실패", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    //table에서 data제거
+    private void removeData(String email){
+        if(createdDB) {
+            String sql = "delete from " + PLAYERTABLE + " where email = " + email + ";";
+            try {
+                db.execSQL(sql);
+            }catch(Exception e){}
+
+        }
+    }
+
+    //data 변경하기
+    private void updateData(Player p){
+        if(createdDB){
+            String sql = "UPDATE " + PLAYERTABLE
+                    + " SET totalScore = totalScore + '" + 100
+                    + "', violationAccel = violationAccel + '" + p.getViolationAccel()
+                    + "', violationVelocity = violationVelocity + '" + p.getViolationVelocity()
+                    + "', violationKal = violationKal +'" + p.getViolationKal()
+                    + "', useSleepinessCenter = useSleepinessCenter +'" + p.getUseSleepinessCenter()
+                    + "', mmr = mmr +'" + 10
+                    + "', conpetitionCount = conpetitionCount + '" + 10
+                    + "', winCount = winCount + '" + 10 + "'"
+                    + " WHERE email = '"+p.getEmail() +"';";
+            try {
+                db.execSQL(sql);
+            }catch(Exception e){
+                Toast.makeText(this, "update 실패", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    public byte[] getByteArrayFromDrawable(Drawable d) {
+        Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] data = stream.toByteArray();
+
+        return data;
+    }
+
+    public Bitmap getAppIcon(byte[] b) {
+        Bitmap bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
+        return bitmap;
     }
 
 

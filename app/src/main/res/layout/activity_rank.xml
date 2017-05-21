@@ -38,7 +38,7 @@
             android:layout_toRightOf="@+id/rankTV01"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/emma2"
+            android:src="@drawable/emma22"
             android:layout_marginRight="10dp"/>     <!-- temp_img -->
 
         <LinearLayout
@@ -100,7 +100,7 @@
             android:layout_toRightOf="@+id/rankTV02"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/emma2"
+            android:src="@drawable/emma22"
             android:layout_marginRight="10dp"/>     <!-- temp_img -->
 
         <LinearLayout
@@ -162,7 +162,7 @@
             android:layout_toRightOf="@+id/rankTV03"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/emma2"
+            android:src="@drawable/emma22"
             android:layout_marginRight="10dp"/>     <!-- temp_img -->
 
         <LinearLayout
@@ -224,7 +224,7 @@
             android:layout_toRightOf="@+id/rankTV04"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/emma2"
+            android:src="@drawable/emma22"
             android:layout_marginRight="10dp"/>     <!-- temp_img -->
 
         <LinearLayout
@@ -286,7 +286,7 @@
             android:layout_toRightOf="@+id/rankTV05"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/emma2"
+            android:src="@drawable/emma22"
             android:layout_marginRight="10dp"/>     <!-- temp_img -->
 
         <LinearLayout
@@ -348,7 +348,7 @@
             android:layout_toRightOf="@+id/rankTV06"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/emma2"
+            android:src="@drawable/emma22"
             android:layout_marginRight="10dp"/>     <!-- temp_img -->
 
         <LinearLayout

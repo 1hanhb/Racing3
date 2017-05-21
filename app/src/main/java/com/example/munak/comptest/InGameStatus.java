@@ -27,6 +27,7 @@ class InGameStatus {
     private static int violationVelocity = 0; //속도 위반 횟수
     private static int violationKal = 0; //칼치기 횟수
     private static int useSleepinessCenter = 0; //졸음쉼터 이용 횟수
+    private static int mission = 0;
 
     //initializer(5.18. 추가됨)
     public static synchronized void initialize(){
@@ -45,7 +46,7 @@ class InGameStatus {
         violationVelocity = 0; //속도 위반 횟수
         violationKal = 0; //칼치기 횟수
         useSleepinessCenter = 0; //졸음쉼터 이용 횟수
-
+        mission = 0;
     }
 
     //setters
@@ -107,6 +108,9 @@ class InGameStatus {
         start = b;
     }
 
+    public static synchronized void setMission() {
+        mission = 1;
+    }
     //getters
 
     //5.14. 추가됨
@@ -163,4 +167,6 @@ class InGameStatus {
     public static synchronized boolean getStart() {
         return start;
     }
+
+    public static synchronized int getMission(){ return mission;}
 }

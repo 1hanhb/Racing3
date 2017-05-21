@@ -115,7 +115,8 @@ public class LoginActivity extends AppCompatActivity {
             createdDB = true;
             try{
                 if(createdDB) {
-                    createTable(PLAYERTABLE);
+                    createTable();
+                    createTable2();
                 }
             }catch(Exception e){}
         }catch(Exception ex){
@@ -124,21 +125,36 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     //table 생성
-    private void createTable(String name) {
-
+    private void createTable() {
         if(createdDB) {
-            db.execSQL("create table " + name + "("
-                    + "email text primary key,"
-                    + "name text,"
-                    + "password text,"
-                    + "totalScore integer,"
-                    + "violationAccel integer,"
-                    + "violationVelocity integer,"
-                    + "violationKal integer,"
-                    + "useSleepinessCenter integer);"
-            );
+            try {
+                db.execSQL("create table player ("
+                        + "email text primary key,"
+                        + "name text,"
+                        + "password text,"
+                        + "totalScore integer,"
+                        + "violationAccel integer,"
+                        + "violationVelocity integer,"
+                        + "violationKal integer,"
+                        + "useSleepinessCenter integer,"
+                        + "mmr integer,"
+                        + "conpetitionCount integer,"
+                        + "winCount integer,"
+                        + "image blob,"
+                        + "mission integer)"
+                );
+            }catch(Exception e){}
         }
-
+    }
+    private void createTable2() {
+        if(createdDB) {
+            try {
+                db.execSQL("create table photo ("
+                        + "email text primary key,"
+                        + "image blob)"
+                );
+            }catch(Exception e){}
+        }
     }
 
     //table에 data 넣기

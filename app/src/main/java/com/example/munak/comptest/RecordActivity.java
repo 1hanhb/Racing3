@@ -35,7 +35,7 @@ public class RecordActivity extends AppCompatActivity {
     TextView velocityText;
     TextView sleepText;
     TextView violationText;
-    TextView recordText;
+    TextView missionText;
 
     String email;
     String name;
@@ -49,6 +49,8 @@ public class RecordActivity extends AppCompatActivity {
     String winCount;
     String tier;
     String tierDef;
+    int mission;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +64,7 @@ public class RecordActivity extends AppCompatActivity {
         velocityText = (TextView) findViewById(R.id.velocityText);
         sleepText = (TextView) findViewById(R.id.sleepText);
         violationText = (TextView) findViewById(R.id.violationText);
-
+        missionText = (TextView) findViewById(R.id.missionText);
 
         createDatabase(DBNAME);
         String sql = "select * from " + PLAYERTABLE;
@@ -84,6 +86,7 @@ public class RecordActivity extends AppCompatActivity {
                 mmr = cursor.getString(8);
                 competitionCount = cursor.getString(9);
                 winCount = cursor.getString(10);
+                mission = cursor.getInt(12);
 
                 break;
             }
@@ -134,7 +137,7 @@ public class RecordActivity extends AppCompatActivity {
                 "(분)\n평균 속도 위반 횟수 : "+ avgVelViolation+"(분)\n평균 가속도 위반 횟수 :"+ avgAccelViolation +"(분)");
         sleepText.setText("총 졸음쉼터 이용 횟수 : "+ Integer.valueOf(useSleepinessCenter)/60 +"(분)\n평균 졸음쉼터 이용 횟수 :"+ avgSleep +"(분)");
         violationText.setText("총 칼치기 횟수 : "+ Integer.valueOf(violationKal)/60 +"(분)\n평균 칼치기 횟수 :"+ avgKalViolation+"(분)");
-
+        missionText.setText("오늘의 미션! 완수 :"+ mission +"회");
 
         //Title Bar Back Button Visible
         ActionBar actionBar = getSupportActionBar();
@@ -147,7 +150,7 @@ public class RecordActivity extends AppCompatActivity {
             final KakaoLink kakaoLink = KakaoLink.getKakaoLink(this);
             final KakaoTalkLinkMessageBuilder kakaoTalkLinkMessageBuilder = kakaoLink.createKakaoTalkLinkMessageBuilder();
 
-            kakaoTalkLinkMessageBuilder.addText("[착한 레이싱]\n" +
+            kakaoTalkLinkMessageBuilder.addText("[착한 레이싱] " +
                     name +"님의 운전등급은 \"" + tier +"\" 입니다." + tierDef + "\n올바른 운전문화를 만들어가는 착한 레이싱!\n모두 동참해주세요!"
             );
 

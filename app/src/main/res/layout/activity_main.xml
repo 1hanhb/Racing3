@@ -47,7 +47,7 @@
                             android:layout_width="80dp"
                             android:layout_height="80dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/emma2"/>
+                            android:src="@drawable/emma22"/>
 
                     </FrameLayout>
 
@@ -100,8 +100,17 @@
                             android:textColor="#FF888888"
                             android:background="@drawable/border"/>
 
-                    </LinearLayout>
 
+                    </LinearLayout>
+                    
+                    <TextView
+                        android:id="@+id/missionTextForMainActivity"
+                        android:layout_marginTop="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12.3dp"
+                        android:textColor="#A6A6A6"
+                        android:text=" 오늘의 미션! 가속도 위반 5회 미만"/>
                 </LinearLayout>
 
             </LinearLayout>
@@ -129,6 +138,7 @@
                     android:layout_marginRight="1dp"
                     android:layout_marginBottom="1dp"
                     android:background="@drawable/test_button_img_11"/>
+
 
                 <Button
                     android:id="@+id/mainTmapButton"
@@ -221,6 +231,13 @@
                     android:background="#00000000"
                     android:layout_marginRight="15dp"
                     android:src="@drawable/instagram_logo"/>
+
+                <Button
+                    android:id="@+id/testButton"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:background="#ff00ff"
+                    android:text="test" />
 
             </LinearLayout>
 

@@ -20,8 +20,19 @@ public class LocationOfSleepinessArea {
     }
     //졸음쉼터 임시 정의
     static sleepinessArea[] sleepinessAreas= {
-            new sleepinessArea(27.0000f, 27.0000f),
-            new sleepinessArea(1.0f, 2.0f)
+            new sleepinessArea(37.592820, 126.767587), //김포
+            new sleepinessArea(37.451004, 126.803376), //시흥
+            new sleepinessArea(37.355950, 126.863597), //서서울
+            new sleepinessArea(37.453095, 127.255840), //번천
+            new sleepinessArea(37.156197, 127.086810), //오산
+            new sleepinessArea(37.392906, 127.025123), //청계
+            new sleepinessArea(37.320246, 126.983762), //이목
+            new sleepinessArea(37.589687, 127.156122), //구리
+            new sleepinessArea(37.288382, 127.139069), //용인
+            new sleepinessArea(37.448037, 127.274694), //상번천
+            new sleepinessArea(37.070020, 126.888579), //향남
+            new sleepinessArea(37.323129, 127.338600), //도척
+
     };
 
 
