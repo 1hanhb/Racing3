@@ -116,7 +116,6 @@ public class LoginActivity extends AppCompatActivity {
             try{
                 if(createdDB) {
                     createTable();
-                    createTable2();
                 }
             }catch(Exception e){}
         }catch(Exception ex){
@@ -140,18 +139,8 @@ public class LoginActivity extends AppCompatActivity {
                         + "mmr integer,"
                         + "conpetitionCount integer,"
                         + "winCount integer,"
-                        + "image blob,"
+                        + "photo blob,"
                         + "mission integer)"
-                );
-            }catch(Exception e){}
-        }
-    }
-    private void createTable2() {
-        if(createdDB) {
-            try {
-                db.execSQL("create table photo ("
-                        + "email text primary key,"
-                        + "image blob)"
                 );
             }catch(Exception e){}
         }

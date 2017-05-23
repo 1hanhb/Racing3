@@ -1,8 +1,11 @@
 package com.example.munak.comptest;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -11,6 +14,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -29,6 +33,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -61,10 +66,12 @@ public class EditActivity extends AppCompatActivity {
     boolean createdDB = false;
 
     String email;
+    String path;
+    String path2;
 
-    byte[] appIcon;
-    byte[] appIcon2;
-    byte[] tempb;
+    String mmr;
+
+    ImageView editProfileEdge;
 
     Bitmap mSaveBm;
 
@@ -93,6 +100,43 @@ public class EditActivity extends AppCompatActivity {
         email = LoginToMainIntent.getStringExtra("keyEmail");
 
         createDatabase(DBNAME);
+        String sql = "select * from " + PLAYERTABLE;
+        Cursor cursor = db.rawQuery(sql, null);
+
+        int count = cursor.getCount();
+        String emailFromDB="";
+        for (int i = 0; i < count; i++) {
+            cursor.moveToNext();
+
+            emailFromDB = cursor.getString(0);
+            if(emailFromDB.equals(email)) {
+                mmr = cursor.getString(8);
+                break;
+            }
+        }
+
+        editProfileEdge = (ImageView) findViewById(R.id.profileEdge);
+
+        int integerMmr = Integer.valueOf(mmr);
+        if(integerMmr<100){
+            editProfileEdge.setImageResource(R.drawable.rank_img_bronze);
+        }
+        else if(integerMmr<200){
+            editProfileEdge.setImageResource(R.drawable.rank_img_silver);
+        }
+        else if(integerMmr<300) {
+            editProfileEdge.setImageResource(R.drawable.rank_img_gold);
+        }
+        else if(integerMmr<400) {
+            editProfileEdge.setImageResource(R.drawable.ranl_img_platinum);
+        }
+        else if(integerMmr<500) {
+            editProfileEdge.setImageResource(R.drawable.rank_img_master);
+        }
+        else {
+
+        }
+
 
         //Title Bar Back Button Visible
         ActionBar actionBar = getSupportActionBar();
@@ -101,8 +145,6 @@ public class EditActivity extends AppCompatActivity {
         iv_UserPhoto = (ImageView) findViewById(R.id.editProfile);
         iv_UserPhoto.setBackground(new ShapeDrawable(new OvalShape()));
         iv_UserPhoto.setClipToOutline(true);
-
-        iv_UserPhoto2 = (ImageView) findViewById(R.id.editProfile2);
 
         Button editPicture = (Button) findViewById(R.id.editPicture);
         editPicture.setOnClickListener(new View.OnClickListener() {
@@ -138,6 +180,58 @@ public class EditActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                /*
+                iv_UserPhoto.buildDrawingCache();
+                Bitmap captureView = iv_UserPhoto.getDrawingCache();
+                FileOutputStream fos;
+                try {
+                    path2 = Environment.getExternalStorageDirectory().toString()+"/capture.jpeg";
+                    fos = new FileOutputStream(path2);
+                    captureView.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                Toast.makeText(getApplicationContext(), "Captured!", Toast.LENGTH_LONG).show();
+                Toast.makeText(EditActivity.this, path2, Toast.LENGTH_SHORT).show();
+                */
+
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                Bitmap sendBitmap = ((BitmapDrawable)iv_UserPhoto.getDrawable()).getBitmap();
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                sendBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
+                intent.putExtra("image",byteArray);
+                setResult(RESULT_OK, intent);
+
+                /*
+                String sql = "update player set photo = '" + byteArray + "';";
+                try{
+                    db.execSQL(sql);
+                }catch(Exception e){
+                    Toast.makeText(EditActivity.this, "photo update fail", Toast.LENGTH_SHORT).show();
+                }
+                */
+
+                finish();
+                //startActivity(intent);
+
+
+                /*
+                String sql = "update player set path = '" + absoultePath + "' where email = '" + email + "';";
+                Toast.makeText(EditActivity.this, absoultePath, Toast.LENGTH_SHORT).show();
+                try{
+                    db.execSQL(sql);
+                    Toast.makeText(EditActivity.this, absoultePath, Toast.LENGTH_SHORT).show();
+                }catch(Exception e){
+                    Toast.makeText(EditActivity.this, "path update fail", Toast.LENGTH_SHORT).show();
+                }
+
+                iv_UserPhoto2 = (ImageView) findViewById(R.id.editProfile2);
+
+                //mSaveBm = BitmapFactory.decodeFile(absoultePath);
+                iv_UserPhoto2.setImageURI(Uri.parse("/sdcard/emulator/0/smartwheel/2132141.jpg"));
+
+                */
 
                 /*
                 appIcon = getByteArrayFromDrawable(iv_UserPhoto.getDrawable());
@@ -425,7 +519,8 @@ public class EditActivity extends AppCompatActivity {
     public void doTakePicture() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        String url = "tmp_" + String.valueOf(System.currentTimeMillis()) + "jpg";
+        String url = "tmp_" + String.valueOf(System.currentTimeMillis()) + ".JPG";
+        path = url;
         mImageCaptureUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(), url));
 
         intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
@@ -480,15 +575,25 @@ public class EditActivity extends AppCompatActivity {
 
                 final Bundle extras = data.getExtras();
 
-                String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/SmartWheel/" + System.currentTimeMillis() + "jpg";
+                String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/SmartWheel/" + System.currentTimeMillis() + ".JPG";
 
                 if(extras != null) {
                     Bitmap photo = extras.getParcelable("data");
 
                     iv_UserPhoto.setImageBitmap(photo);
-
                     storeCropImage(photo, filePath);
+                    Toast.makeText(this, "abc", Toast.LENGTH_SHORT).show();
                     absoultePath = filePath;
+/*
+                    MediaStore.Images.Media.insertImage(getContentResolver(), photo, "title", "descripton");
+
+                    IntentFilter intentFilter = new IntentFilter(Intent.ACTION_MEDIA_SCANNER_STARTED);
+                    intentFilter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);
+                    intentFilter.addDataScheme("file");
+                    registerReceiver(mReceiver, intentFilter);
+                    sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"
+                            + Environment.getExternalStorageDirectory())));
+*/
                     break;
                 }
 
@@ -498,9 +603,21 @@ public class EditActivity extends AppCompatActivity {
                 }
             }
         }
-
-
     }
+
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver()
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            if (intent.getAction().equals(Intent.ACTION_MEDIA_SCANNER_STARTED))
+                Toast.makeText(EditActivity.this, "사진을 업데이트하고있습니다" ,
+                        Toast.LENGTH_SHORT).show();
+            else if (intent.getAction().equals(Intent.ACTION_MEDIA_SCANNER_FINISHED))
+                Toast.makeText(EditActivity.this, "사진이 업데이트 되었습니다" ,
+                        Toast.LENGTH_SHORT).show();
+        }
+    };
 
 
 
@@ -533,8 +650,10 @@ public class EditActivity extends AppCompatActivity {
 
 
     private void storeCropImage(Bitmap bitmap, String filePath) {
+
         String dirPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/SmartWheel";
         File directory_SmartWheel = new File(dirPath);
+
 
         if (!directory_SmartWheel.exists()) {
             directory_SmartWheel.mkdir();
@@ -544,15 +663,15 @@ public class EditActivity extends AppCompatActivity {
         BufferedOutputStream out = null;
 
         try {
+            Toast.makeText(this, "okok", Toast.LENGTH_SHORT).show();
             copyFile.createNewFile();
             out = new BufferedOutputStream(new FileOutputStream(copyFile));
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-
+/*
             sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(copyFile)));
-
             out.flush();
             out.close();
-
+*/
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -568,7 +687,6 @@ public class EditActivity extends AppCompatActivity {
             try {
                 if(createdDB) {
                     createTable();
-                    createTable2();
                 }
             } catch(Exception e){}
         } catch(Exception ex) {
@@ -592,17 +710,8 @@ public class EditActivity extends AppCompatActivity {
                         + "mmr integer,"
                         + "conpetitionCount integer,"
                         + "winCount integer,"
-                        + "image blob,"
+                        + "photo blob,"
                         + "mission integer)"
-                );
-            }catch(Exception e){}
-        }
-    }
-    private void createTable2() {
-        if(createdDB) {
-            try {
-                db.execSQL("create table photo ("
-                        + "image blob)"
                 );
             }catch(Exception e){}
         }
@@ -653,24 +762,23 @@ public class EditActivity extends AppCompatActivity {
     }
 
     //data 조회하기
+
     private void queryData(){
         if(createdDB) {
-            String sql = "select image from photo;";
+            String sql = "select * from " + PLAYERTABLE;
             try {
                 Cursor cursor = db.rawQuery(sql, null);
 
-                Toast.makeText(this, "1", Toast.LENGTH_SHORT).show();
-
                 if (cursor != null) {
-                    Toast.makeText(this, "2", Toast.LENGTH_SHORT).show();
-                    while (cursor.moveToNext()) {
-                        Toast.makeText(this, "3", Toast.LENGTH_SHORT).show();
-                        appIcon2 = cursor.getBlob(0);
-                        Toast.makeText(this, "4", Toast.LENGTH_SHORT).show();
-                        Bitmap bm= BitmapFactory.decodeByteArray(appIcon2, 0, appIcon2.length);
-                        Toast.makeText(this, "5", Toast.LENGTH_SHORT).show();
-                        iv_UserPhoto2.setImageBitmap(bm);
-                        Toast.makeText(this, "6", Toast.LENGTH_SHORT).show();
+                    int count = cursor.getCount();
+
+                    for (int i = 0; i < count; i++) {
+                        cursor.moveToNext();
+
+                        if(email.equals(cursor.getString(0))){
+                            path = cursor.getString(11);
+                            break;
+                        }
                     }
                 }
             } catch(Exception e){
@@ -678,7 +786,6 @@ public class EditActivity extends AppCompatActivity {
             }
         }
     }
-
     //table에서 data제거
     private void removeData(String email){
         if(createdDB) {

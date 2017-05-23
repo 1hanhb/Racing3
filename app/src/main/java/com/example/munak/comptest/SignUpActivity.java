@@ -121,7 +121,6 @@ public class SignUpActivity extends AppCompatActivity {
             try {
                 if(createdDB) {
                     createTable();
-                    createTable2();
                 }
             } catch(Exception e){}
         } catch(Exception ex) {
@@ -145,22 +144,12 @@ public class SignUpActivity extends AppCompatActivity {
                         + "mmr integer,"
                         + "conpetitionCount integer,"
                         + "winCount integer,"
-                        + "image blob,"
+                        + "photo blob,"
                         + "mission integer)"
                 );
             }catch(Exception e){}
         }
     }
-    private void createTable2() {
-        if(createdDB) {
-            try {
-                db.execSQL("create table photo ("
-                        + "image blob)"
-                );
-            }catch(Exception e){}
-        }
-    }
-
 
     //table에 data 넣기
     private boolean insertData(String name,Player p){
@@ -192,8 +181,6 @@ public class SignUpActivity extends AppCompatActivity {
             return false;
         }
     }
-
-
 
     //table 제거
     private void removeTable(String tableName){

@@ -62,6 +62,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/mainNameTV"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="EMMA"
@@ -76,20 +77,13 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:id="@+id/mainRankTV"
+                            android:layout_width="100dp"
                             android:layout_height="wrap_content"
                             android:layout_marginRight="3dp"
                             android:text="GOLD"
                             android:textSize="15dp"
                             android:textColor="#FF666666"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="30dp"
-                            android:text="13 RANK"
-                            android:textSize="10dp"
-                            android:textColor="#FF888888"/>
 
                         <Button
                             android:id="@+id/mainEditButton"

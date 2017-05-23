@@ -7,9 +7,11 @@ import android.content.Intent;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
@@ -39,6 +41,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.appevents.AppEventsLogger;
@@ -62,6 +65,8 @@ import java.util.Timer;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
+    int RESULT_FROM_EDIT = 11;
+
     Sensor accelerometer;
     SensorManager sensorManager;
     LocationManager locationManager;
@@ -74,6 +79,33 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     boolean isStart = false;
 
     Button mainStartButton;
+
+    Bitmap image;
+    ImageView profile;
+
+
+    final private String DBNAME = "playerinfo.db";
+    final private String PLAYERTABLE = "player";
+    SQLiteDatabase db;
+    boolean createdDB = false;
+
+
+    String name;
+    String totalScore;
+    String violationAccel;
+    String violationVelocity;
+    String violationKal;
+    String useSleepinessCenter;
+    String mmr;
+    String competitionCount;
+    String winCount;
+    String tier;
+    String tierDef;
+    byte[] photo;
+
+    TextView mainRankTV;
+    TextView mainNameTV;
+    ImageView profileEdge;
 
     //Slide Menu
     private final String[] navItems = {"Brown", "Cadet Blue", "Dark Olive Green", "Dark Orange", "Golden Rod"};
@@ -170,7 +202,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             public void onClick(View view) {
                 Intent MainToEditIntent = new Intent(MainActivity.this, EditActivity.class);
                 MainToEditIntent.putExtra("keyEmail",email);
-                startActivity(MainToEditIntent);
+                startActivityForResult(MainToEditIntent, RESULT_FROM_EDIT);
+                //startActivity(MainToEditIntent);
             }
         });
 
@@ -271,9 +304,84 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
 
-        ImageView profile = (ImageView) findViewById(R.id.profile);
+
+        profile = (ImageView) findViewById(R.id.profile);
+
+
+        createDatabase(DBNAME);
+        String sql = "select * from " + PLAYERTABLE;
+        Cursor cursor = db.rawQuery(sql, null);
+
+        int count = cursor.getCount();
+        String emailFromDB="";
+        for (int i = 0; i < count; i++) {
+            cursor.moveToNext();
+
+            emailFromDB = cursor.getString(0);
+            if(emailFromDB.equals(email)) {
+                name = cursor.getString(1);
+                mmr = cursor.getString(8);
+                competitionCount = cursor.getString(9);
+                winCount = cursor.getString(10);
+                photo = cursor.getBlob(11);
+
+                break;
+            }
+        }
+
+        mainNameTV = (TextView) findViewById(R.id.mainNameTV);
+        mainNameTV.setText(String.valueOf(name));
+
+        /*
+        if(photo != null) {
+            Toast.makeText(this, "ok", Toast.LENGTH_SHORT).show();
+            Bitmap bm = BitmapFactory.decodeByteArray(photo, 0, photo.length);
+            profile.setImageBitmap(bm);
+        }
+        else {
+            Toast.makeText(this, "no", Toast.LENGTH_SHORT).show();
+        }
+        */
+
+        mainRankTV = (TextView) findViewById(R.id.mainRankTV);
+        profileEdge = (ImageView) findViewById(R.id.profileEdge);
+
+        int integerMmr = Integer.valueOf(mmr);
+        if(integerMmr<100){
+            tier = "BRONZE";
+            profileEdge.setImageResource(R.drawable.rank_img_bronze);
+            mainRankTV.setTextColor(Color.rgb(197,135,52));
+        }
+        else if(integerMmr<200){
+            tier = "SILVER";
+            profileEdge.setImageResource(R.drawable.rank_img_silver);
+            mainRankTV.setTextColor(Color.rgb(192,192,192));
+        }
+        else if(integerMmr<300) {
+            tier = "GOLD";
+            profileEdge.setImageResource(R.drawable.rank_img_gold);
+            mainRankTV.setTextColor(Color.rgb(244,228,83));
+        }
+        else if(integerMmr<400) {
+            tier = "PLATINUM";
+            profileEdge.setImageResource(R.drawable.ranl_img_platinum);
+            mainRankTV.setTextColor(Color.rgb(108,244,170));
+        }
+        else if(integerMmr<500) {
+            tier = "MASTER";
+            profileEdge.setImageResource(R.drawable.rank_img_master);
+            mainRankTV.setTextColor(Color.rgb(65,49,255));
+        }
+        else
+            tier = "ERROR";
+
+        mainRankTV.setText(tier);
+
         profile.setBackground(new ShapeDrawable(new OvalShape()));
         profile.setClipToOutline(true);
+
+
+
 
         //test button click event
         Button testButton = (Button) findViewById(R.id.testButton);
@@ -486,6 +594,39 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     }
                 }
                 break;
+        }
+    }
+
+    private void createDatabase(String name){
+        try{
+
+            db = openOrCreateDatabase(name, MODE_ENABLE_WRITE_AHEAD_LOGGING,null);
+            createdDB = true;
+
+        }catch(Exception ex){
+            Toast.makeText(this, "db 생성 안됨", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode != RESULT_OK) {
+            Toast.makeText(MainActivity.this, "결과가 성공이 아님.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (requestCode == RESULT_FROM_EDIT) {
+            byte[] arr = data.getByteArrayExtra("image");
+
+            image = BitmapFactory.decodeByteArray(arr, 0, arr.length);
+
+            profile.setImageBitmap(image);
+
+
+        } else {
+            Toast.makeText(MainActivity.this, "RESULT_FROM_EDIT 아님", Toast.LENGTH_SHORT).show();
         }
     }
 
