@@ -4,9 +4,12 @@ import android.app.Service;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.media.AudioManager;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -17,10 +20,22 @@ public class RacingService extends Service{
 
     //SoundManager 정의
     SoundManager sManager;
+    boolean restartable = true;
+    boolean first = true;
 
     public RacingService() {
 
     }
+
+    Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg){
+            if(msg.what ==1){
+                Toast.makeText(RacingService.this, "상대방 찾는중", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    };
 
     @Override
     public int onStartCommand(Intent intent,int flag ,int startId) {
@@ -42,15 +57,8 @@ public class RacingService extends Service{
         email = intent.getStringExtra("keyEmail");
         //Toast.makeText(this, "email : " + email, Toast.LENGTH_SHORT).show();
 
-        InGameStatus.setStart(true);
-        InGameStatus.initialize();
-
-        InGameThread inGameThread = new InGameThread();
-        Racing racing = new Racing();
-
-
-        inGameThread.start();
-        racing.start();
+        StartThread startThread = new StartThread(mHandler);
+        startThread.start();
 
         return START_NOT_STICKY;
     }
@@ -94,18 +102,81 @@ public class RacingService extends Service{
                 Thread.sleep(3000);
             }catch(Exception e){}
 
-            speakTTS("착한 레이싱을 시작하겠습니다");
+            if(first) {
+                speakTTS("착한 레이싱을 시작하겠습니다");
+                first = false;
+            }
 
             player = new Player(email);
 
 
 
             while(InGameStatus.getStart()){
+                if(InGameStatus.getStopSwitch()){
+                    try{
+                        Thread.sleep(1000);
+                    }catch(Exception e){}
+
+                    speakTTS("게임을 종료합니다");
+                    break;
+                }
+
+
                 try {
-                    Thread.sleep(10000);
+                    Thread.sleep(2000);
+                    if (InGameStatus.getStopSwitch()) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (Exception e) {
+                        }
+
+                        speakTTS("게임을 종료합니다");
+                        break;
+                    }
+                    Thread.sleep(2000);
+                    if (InGameStatus.getStopSwitch()) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (Exception e) {
+                        }
+
+                        speakTTS("게임을 종료합니다");
+                        break;
+                    }
+                    Thread.sleep(2000);
+                    if (InGameStatus.getStopSwitch()) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (Exception e) {
+                        }
+
+                        speakTTS("게임을 종료합니다");
+                        break;
+                    }
+                    Thread.sleep(2000);
+                    if (InGameStatus.getStopSwitch()) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (Exception e) {
+                        }
+
+                        speakTTS("게임을 종료합니다");
+                        break;
+                    }
+                    Thread.sleep(2000);
+                    if (InGameStatus.getStopSwitch()) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (Exception e) {
+                        }
+
+                        speakTTS("게임을 종료합니다");
+                        break;
+                    }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+
 
                 player.getData();
                 yourScore = yourScore + (int)((player.getTotalScore()-myScore) * Math.random() * 2);
@@ -114,43 +185,50 @@ public class RacingService extends Service{
                 if(count==2){
                     //본인 스코어, 상대 스코어 음성으로
                     int dif = myScore - yourScore;
-                    speakTTS("당신의 점수는 " + myScore +"입니다");
-                    if(dif>0)
-                        speakTTS("상대방보다 " + dif + "점 높습니다");
-                    else if (dif ==0)
-                        speakTTS("상대방과 동점입니다");
-                    else {
-                        dif = -1 * dif;
-                        speakTTS("상대방보다 " + dif + "점 낮습니다");
+
+                    try{
+                        Thread.sleep(3000);
+                    }catch(Exception ee){}
+
+                    speakTTS(myScore +"점 대 " + yourScore +"점");
+
+
+                    if(InGameStatus.getStopSwitch()){
+                        try{
+                            Thread.sleep(1000);
+                        }catch(Exception e){}
+
+                        speakTTS("게임을 종료합니다");
+                        break;
                     }
 
 
                     stop++;
-                    if(stop==4){//stop 1당 30초
+                    if(stop==2){//stop 1당 30초
                         InGameStatus.setStart(false);
 
                         if(myWin) {
                             createDatabase(DBNAME);
                             updateData(player, true);
                             try {
-                                sManager.play(1);
                                 Thread.sleep(3000);
+                                sManager.play(1);
                             } catch (Exception e) {
 
                             }
-                            speakTTS("게임에 승리하였습니다");
+                            speakTTS("승리");
                         }
 
                         else {
                             createDatabase(DBNAME);
                             updateData(player,false);
                             try {
-                                sManager.play(2);
                                 Thread.sleep(3000);
+                                sManager.play(2);
                             } catch(Exception e){
 
                             }
-                            speakTTS("게임에 패배하였습니다");
+                            speakTTS("패배");
                         }
 
                         break;
@@ -164,30 +242,96 @@ public class RacingService extends Service{
                             sManager.play(3);
                             Thread.sleep(2000);
                         }catch(Exception e){}
-                        speakTTS("동점입니다");
+                        equalScoring();
                         myWin = false;
                     }else if(myWin && (myScore<yourScore)){//본인이 이기고있다가 역전당한경우
                         try{
                             sManager.play(5);
                             Thread.sleep(2000);
                         }catch(Exception e){}
-                        speakTTS("상대방이 " + yourScore+ "점으로 역전당했습니다");
+                        losingGame();
                         myWin = false;
                     }else if(!myWin && (myScore > yourScore) ){//본인이 지고있다가 역전한경우
                         try{
                             sManager.play(4);
                             Thread.sleep(2000);
                         }catch(Exception e){}
-                        speakTTS("당신은 " + myScore + "점으로 역전했습니다");
+                        winningGame();
 
                         myWin = true;
                     }
+                    if(InGameStatus.getStopSwitch()){
+                        try{
+                            Thread.sleep(1000);
+                        }catch(Exception e){}
 
-
+                        speakTTS("게임을 종료합니다");
+                        break;
+                    }
                 }
                 count = (count+1)%3;
             }
+            restartable = true;
         }
+
+        public void losingGame(){
+            //myScore < yourScore
+            int a;
+            a = (int)(Math.random()*2)+1;
+            switch(a) {
+                case 1:
+                    speakTTS("상대방 점수는 " + yourScore+ "점으로 역전당했습니다");
+                    break;
+                case 2:
+                    speakTTS("지고있지롱 ㅋㅋ 상대방 " + yourScore +"다");
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+            }
+
+
+
+
+        }
+        public void winningGame(){
+            // myScore > yourScore
+            int a;
+            a = (int)(Math.random()*2)+1;
+            switch(a) {
+                case 1:
+                    speakTTS("당신의 점수는 " + myScore + "점으로 역전했습니다");
+                    break;
+                case 2:
+                    speakTTS("이기고 있네? 정말 잘하는구나");
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+            }
+
+        }
+        public void equalScoring(){
+            //myScore == yourScore
+            int a;
+            a = (int)(Math.random()*2)+1;
+            switch(a) {
+                case 1:
+                    speakTTS("동점입니다");
+                    break;
+                case 2:
+                    speakTTS("언제까지 동점할거냐 좀 이겨보자");
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+            }
+
+        }
+
 
         @Override
         public void onInit(int i){
@@ -375,5 +519,50 @@ public class RacingService extends Service{
                 }
             }
         }
+    }
+
+
+
+    public class StartThread extends Thread{
+        Handler handler;
+        public StartThread(Handler mhandler){
+            handler = mhandler;
+        }
+        public void run() {
+            InGameStatus.setStopSwitch(false);
+            restartable = true;
+            first = true;
+
+
+            while(!InGameStatus.getStopSwitch()){
+                if (restartable) {
+                    restartable = false;
+
+                    searchingGame();
+
+                    InGameThread inGameThread = new InGameThread();
+                    Racing racing = new Racing();
+
+                    InGameStatus.setStart(true);
+                    InGameStatus.initialize();
+
+                    inGameThread.start();
+                    racing.start();
+                }else{
+                    try{
+                        Thread.sleep(1000);
+                    }catch(Exception e){}
+                }
+            }
+        }
+        public void searchingGame(){
+            Message msg = new Message();
+            msg.what = 1;
+            handler.sendMessage(msg);
+            try{
+                Thread.sleep(5000);
+            }catch(Exception e){}
+        }
+
     }
 }

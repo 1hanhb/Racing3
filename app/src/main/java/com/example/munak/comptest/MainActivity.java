@@ -5,7 +5,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -13,7 +12,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.hardware.Sensor;
@@ -23,12 +21,8 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.media.AudioManager;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Environment;
-import android.os.Message;
-import android.speech.tts.TextToSpeech;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -36,7 +30,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -60,8 +53,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.TimerTask;
-import java.util.Timer;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
@@ -231,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 if(!isStart) {
                     isStart = true;
-
+                    InGameStatus.setStopSwitch(false);
                     Toast.makeText(MainActivity.this, "game start", Toast.LENGTH_SHORT).show();
 
                     mainStartButton.setBackgroundResource(R.drawable.test_button_img_12);
@@ -242,6 +233,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 } else {
                     isStart = false;
+
+                    InGameStatus.setStopSwitch(true);
 
                     mainStartButton.setBackgroundResource(R.drawable.test_button_img_11);
                     Intent Service = new Intent(MainActivity.this, RacingService.class);
@@ -285,6 +278,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             public void onClick(View view) {
                 Intent MainToRankIntent = new Intent(MainActivity.this, RankActivity.class);
                 MainToRankIntent.putExtra("keyEmail",email);
+
+
+                if(sendOk == true) {
+                    Bitmap sendBitmap = ((BitmapDrawable) profile.getDrawable()).getBitmap();
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    sendBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    byteArray = stream.toByteArray();
+                    MainToRankIntent.putExtra("image3", byteArray);
+                }
+
                 startActivity(MainToRankIntent);
             }
         });
@@ -375,7 +378,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
         else if(integerMmr<400) {
             tier = "PLATINUM";
-            profileEdge.setImageResource(R.drawable.ranl_img_platinum);
+            profileEdge.setImageResource(R.drawable.rank_img_platinum);
             mainRankTV.setTextColor(Color.rgb(108,244,170));
         }
         else if(integerMmr<500) {
@@ -383,8 +386,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             profileEdge.setImageResource(R.drawable.rank_img_master);
             mainRankTV.setTextColor(Color.rgb(65,49,255));
         }
-        else
+        else {
             tier = "ERROR";
+        }
 
         mainRankTV.setText(tier);
 

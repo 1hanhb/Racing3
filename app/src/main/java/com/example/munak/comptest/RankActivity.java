@@ -3,12 +3,17 @@ package com.example.munak.comptest;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +38,9 @@ public class RankActivity extends AppCompatActivity {
     String photoFile;
     int mmr;
 
+    byte[] getImage2;
+    Bitmap saveImage2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,24 +52,70 @@ public class RankActivity extends AppCompatActivity {
 
         Intent MainToRecordIntent = getIntent();
         email = MainToRecordIntent.getStringExtra("keyEmail");
+        getImage2 = MainToRecordIntent.getByteArrayExtra("image3");
 
         TextView rankName06 = (TextView) findViewById(R.id.rankName06);
         TextView rankTier06 = (TextView) findViewById(R.id.rankTier06);
+
+        ImageView rank01 = (ImageView) findViewById(R.id.rankProfImg01);
+        ImageView rank02 = (ImageView) findViewById(R.id.rankProfImg02);
+        ImageView rank03 = (ImageView) findViewById(R.id.rankProfImg03);
+        ImageView rank04 = (ImageView) findViewById(R.id.rankProfImg04);
+        ImageView rank05 = (ImageView) findViewById(R.id.rankProfImg05);
+        ImageView rank06 = (ImageView) findViewById(R.id.rankProfImg06);
+
+        ImageView rankEdge06 = (ImageView) findViewById(R.id.rankProfEdgeImg06);
+
+
+        if(getImage2 != null) {
+            //Toast.makeText(this, "ok1 : " + getImage.toString(), Toast.LENGTH_SHORT).show();
+            saveImage2 = BitmapFactory.decodeByteArray(getImage2, 0, getImage2.length);
+            rank06.setImageBitmap(saveImage2);
+        }
+
 
         createDatabase(DBNAME);
         getDataFromDB();
 
         rankName06.setText(name);
-        if(mmr<=100)
+        if(mmr<=100) {
             rankTier06.setText("BRONZE");
-        else if(mmr<=200)
+            rankEdge06.setImageResource(R.drawable.rank_img_bronze);
+        }
+        else if(mmr<=200) {
             rankTier06.setText("SILVER");
-        else if(mmr<=300)
+            rankEdge06.setImageResource(R.drawable.rank_img_silver);
+        }
+        else if(mmr<=300) {
             rankTier06.setText("GOLD");
-        else if(mmr<=400)
+            rankEdge06.setImageResource(R.drawable.rank_img_gold);
+        }
+        else if(mmr<=400) {
             rankTier06.setText("PLATINUM");
-        else
+            rankEdge06.setImageResource(R.drawable.rank_img_platinum);
+        }
+        else {
             rankTier06.setText("MASTER");
+            rankEdge06.setImageResource(R.drawable.rank_img_master);
+        }
+
+        rank01.setBackground(new ShapeDrawable(new OvalShape()));
+        rank01.setClipToOutline(true);
+
+        rank02.setBackground(new ShapeDrawable(new OvalShape()));
+        rank02.setClipToOutline(true);
+
+        rank03.setBackground(new ShapeDrawable(new OvalShape()));
+        rank03.setClipToOutline(true);
+
+        rank04.setBackground(new ShapeDrawable(new OvalShape()));
+        rank04.setClipToOutline(true);
+
+        rank05.setBackground(new ShapeDrawable(new OvalShape()));
+        rank05.setClipToOutline(true);
+
+        rank06.setBackground(new ShapeDrawable(new OvalShape()));
+        rank06.setClipToOutline(true);
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -105,16 +159,6 @@ public class RankActivity extends AppCompatActivity {
                         + "winCount integer,"
                         + "image blob,"
                         + "mission integer)"
-                );
-            }catch(Exception e){}
-        }
-    }
-    private void createTable2() {
-        if(createdDB) {
-            try {
-                db.execSQL("create table photo ("
-                        + "email text primary key,"
-                        + "image blob)"
                 );
             }catch(Exception e){}
         }

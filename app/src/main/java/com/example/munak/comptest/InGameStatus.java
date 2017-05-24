@@ -8,7 +8,7 @@ package com.example.munak.comptest;
 class InGameStatus {
     //게임 온/오프
     private static boolean start;
-
+    private static boolean stopSwitch = false;
     //게임 내에서 실시간으로 측정되는 값들
     private static int totalScore =0; // 총 점수
     private static double velocity = 0.0f; //속도 (센서에 의해 측정
@@ -107,7 +107,7 @@ class InGameStatus {
     public static synchronized void setStart(boolean b){
         start = b;
     }
-
+    public static synchronized void setStopSwitch(boolean b) { stopSwitch = b; }
     public static synchronized void setMission() {
         mission = 1;
     }
@@ -166,6 +166,10 @@ class InGameStatus {
 
     public static synchronized boolean getStart() {
         return start;
+    }
+
+    public static synchronized boolean getStopSwitch() {
+        return stopSwitch;
     }
 
     public static synchronized int getMission(){ return mission;}
