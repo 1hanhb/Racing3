@@ -55,6 +55,7 @@ public class SignUpActivity extends AppCompatActivity {
                     Intent signUpToLoginIntent = new Intent(SignUpActivity.this, LoginActivity.class);
                     signUpToLoginIntent.putExtra("keyEmail",email);
                     startActivity(signUpToLoginIntent);
+                    finish();
                 }
             }
         });
@@ -64,7 +65,8 @@ public class SignUpActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+                //NavUtils.navigateUpFromSameTask(this);
+                finish();
                 return true;
 
             default:
@@ -144,7 +146,7 @@ public class SignUpActivity extends AppCompatActivity {
                         + "mmr integer,"
                         + "conpetitionCount integer,"
                         + "winCount integer,"
-                        + "photo blob,"
+                        + "photo Blob,"
                         + "mission integer)"
                 );
             }catch(Exception e){}

@@ -71,8 +71,11 @@ public class EditActivity extends AppCompatActivity {
 
     String mmr;
     byte[] photo;
+    byte[] getImage = null;
+    Bitmap saveImage;
 
     ImageView editProfileEdge;
+    ImageView editProfile;
 
     Bitmap mSaveBm;
 
@@ -88,7 +91,6 @@ public class EditActivity extends AppCompatActivity {
 
     private Uri mImageCaptureUri;
     private ImageView iv_UserPhoto;
-    private ImageView iv_UserPhoto2;
     private String absoultePath;
 
     @Override
@@ -99,6 +101,16 @@ public class EditActivity extends AppCompatActivity {
         //keyE-Mail
         Intent LoginToMainIntent = getIntent();
         email = LoginToMainIntent.getStringExtra("keyEmail");
+        getImage = LoginToMainIntent.getByteArrayExtra("image1");
+
+        editProfile = (ImageView) findViewById(R.id.editProfile);
+
+        if(getImage != null) {
+            //Toast.makeText(this, "ok1 : " + getImage.toString(), Toast.LENGTH_SHORT).show();
+            saveImage = BitmapFactory.decodeByteArray(getImage, 0, getImage.length);
+            editProfile.setImageBitmap(saveImage);
+
+        }
 
         createDatabase(DBNAME);
         String sql = "select * from " + PLAYERTABLE;
@@ -202,7 +214,7 @@ public class EditActivity extends AppCompatActivity {
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 sendBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
                 byte[] byteArray = stream.toByteArray();
-                intent.putExtra("image",byteArray);
+                intent.putExtra("image2",byteArray);
                 setResult(RESULT_OK, intent);
 
                 /*
@@ -269,7 +281,8 @@ public class EditActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+                //NavUtils.navigateUpFromSameTask(this);
+                finish();
                 return true;
 
             default:
@@ -582,7 +595,6 @@ public class EditActivity extends AppCompatActivity {
 
                     iv_UserPhoto.setImageBitmap(photo);
                     storeCropImage(photo, filePath);
-                    Toast.makeText(this, "abc", Toast.LENGTH_SHORT).show();
                     absoultePath = filePath;
 /*
                     MediaStore.Images.Media.insertImage(getContentResolver(), photo, "title", "descripton");
@@ -663,7 +675,6 @@ public class EditActivity extends AppCompatActivity {
         BufferedOutputStream out = null;
 
         try {
-            Toast.makeText(this, "okok", Toast.LENGTH_SHORT).show();
             copyFile.createNewFile();
             out = new BufferedOutputStream(new FileOutputStream(copyFile));
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);

@@ -82,7 +82,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     Bitmap image;
     ImageView profile;
+    byte[] arr;
+    byte[] byteArray = null;
 
+    boolean sendOk = false;
 
     final private String DBNAME = "playerinfo.db";
     final private String PLAYERTABLE = "player";
@@ -112,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private ListView lvNavList;
     private LinearLayout flContainer;
     private DrawerLayout dlDrawer;
-
+/*
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);
@@ -121,13 +124,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         android.os.Process.killProcess(android.os.Process.myPid());
 
-        /*if (dlDrawer.isDrawerOpen(lvNavList)) {
-            dlDrawer.closeDrawer(lvNavList);
-
-        } else {
-            super.onBackPressed();
-        }*/
+//        if (dlDrawer.isDrawerOpen(lvNavList)) {
+//            dlDrawer.closeDrawer(lvNavList);
+//
+//        } else {
+//            super.onBackPressed();
+//        }
     }
+*/
 
     /*public void onBackPressed() {
         // TODO Auto-generated method stub
@@ -169,6 +173,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Intent LoginToMainIntent = getIntent();
         email = LoginToMainIntent.getStringExtra("keyEmail");
 
+        profile = (ImageView) findViewById(R.id.profile);
+
         //START
         ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
 
@@ -202,6 +208,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             public void onClick(View view) {
                 Intent MainToEditIntent = new Intent(MainActivity.this, EditActivity.class);
                 MainToEditIntent.putExtra("keyEmail",email);
+
+                if(sendOk == true) {
+                    Bitmap sendBitmap = ((BitmapDrawable) profile.getDrawable()).getBitmap();
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    sendBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    byteArray = stream.toByteArray();
+                    MainToEditIntent.putExtra("image1", byteArray);
+                }
+
                 startActivityForResult(MainToEditIntent, RESULT_FROM_EDIT);
                 //startActivity(MainToEditIntent);
             }
@@ -327,8 +342,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         mainNameTV = (TextView) findViewById(R.id.mainNameTV);
         mainNameTV.setText(String.valueOf(name));
-
-        profile = (ImageView) findViewById(R.id.profile);
 
         /*
         if(photo != null) {
@@ -611,20 +624,22 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode != RESULT_OK) {
-            Toast.makeText(MainActivity.this, "결과가 성공이 아님.", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(MainActivity.this, "결과가 성공이 아님.", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (requestCode == RESULT_FROM_EDIT) {
-            byte[] arr = data.getByteArrayExtra("image");
+            arr = data.getByteArrayExtra("image2");
 
             image = BitmapFactory.decodeByteArray(arr, 0, arr.length);
 
             profile.setImageBitmap(image);
 
+            sendOk = true;
+
 
         } else {
-            Toast.makeText(MainActivity.this, "RESULT_FROM_EDIT 아님", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(MainActivity.this, "RESULT_FROM_EDIT 아님", Toast.LENGTH_SHORT).show();
         }
     }
 

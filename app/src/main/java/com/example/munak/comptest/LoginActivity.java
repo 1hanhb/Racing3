@@ -53,6 +53,7 @@ public class LoginActivity extends AppCompatActivity {
                     Intent LoginToMainIntent = new Intent(LoginActivity.this, MainActivity.class);
                     LoginToMainIntent.putExtra("keyEmail",id);
                     startActivity(LoginToMainIntent);
+                    finish();
                 }
             }
         });
@@ -63,6 +64,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent2 = new Intent(LoginActivity.this, SignUpActivity.class);
                 startActivity(intent2);
+                finish();
             }
         });
     }
