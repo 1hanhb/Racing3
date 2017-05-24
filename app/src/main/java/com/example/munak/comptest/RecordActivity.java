@@ -125,18 +125,20 @@ public class RecordActivity extends AppCompatActivity {
             tier = "ERROR";
 
 
-        nameText.setText("이름 :"+ name +"\n이메일 : "+emailFromDB);
+        nameText.setText("이름 :"+ name +"\n이메일 : "+emailFromDB + "\n전적 : "+Integer.valueOf(competitionCount)+"전 "+
+                Integer.valueOf(winCount) +"승 "+(Integer.valueOf(competitionCount)-Integer.valueOf(winCount)) +"패"
+                +"("+String.format("%.1f", (double)Integer.valueOf(winCount)/Integer.valueOf(competitionCount))+ "%)");
         rankText.setText("계급 : " + tier);
 
-        double avgAccelViolation = Integer.valueOf(competitionCount) == 0 ?  0.0f: Integer.valueOf(violationAccel)/Integer.valueOf(competitionCount)/60;
-        double avgVelViolation = Integer.valueOf(competitionCount) == 0 ?  0.0f: Integer.valueOf(violationVelocity)/Integer.valueOf(competitionCount)/60;
-        double avgKalViolation = Integer.valueOf(competitionCount) == 0 ?  0.0f: Integer.valueOf(violationKal)/Integer.valueOf(competitionCount)/60;
-        double avgSleep = Integer.valueOf(competitionCount) == 0 ?  0.0f: Integer.valueOf(useSleepinessCenter)/Integer.valueOf(competitionCount)/60;
+        double avgAccelViolation = Integer.valueOf(competitionCount) == 0 ?  0.0f: Integer.valueOf(violationAccel)/Integer.valueOf(competitionCount);
+        double avgVelViolation = Integer.valueOf(competitionCount) == 0 ?  0.0f: Integer.valueOf(violationVelocity)/Integer.valueOf(competitionCount);
+        double avgKalViolation = Integer.valueOf(competitionCount) == 0 ?  0.0f: Integer.valueOf(violationKal)/Integer.valueOf(competitionCount);
+        double avgSleep = Integer.valueOf(competitionCount) == 0 ?  0.0f: Integer.valueOf(useSleepinessCenter)/Integer.valueOf(competitionCount);
 
-        velocityText.setText("\n총 속도 위반 횟수 : "+ Integer.valueOf(violationVelocity)/60 +"(분)\n총 가속도 위반 횟수 : "+Integer.valueOf(violationAccel)/60+
-                "(분)\n평균 속도 위반 횟수 : "+ avgVelViolation+"(분)\n평균 가속도 위반 횟수 :"+ avgAccelViolation +"(분)");
-        sleepText.setText("총 졸음쉼터 이용 횟수 : "+ Integer.valueOf(useSleepinessCenter)/60 +"(분)\n평균 졸음쉼터 이용 횟수 :"+ avgSleep +"(분)");
-        violationText.setText("총 칼치기 횟수 : "+ Integer.valueOf(violationKal)/60 +"(분)\n평균 칼치기 횟수 :"+ avgKalViolation+"(분)");
+        velocityText.setText("\n총 속도 위반 횟수 : "+ Integer.valueOf(violationVelocity) +"회\n총 가속도 위반 횟수 : "+Integer.valueOf(violationAccel)+
+                "회\n평균 속도 위반 횟수 : "+ String.format("%.2f", avgVelViolation)+"회\n평균 가속도 위반 횟수 :"+ String.format("%.2f", avgAccelViolation) +"회");
+        sleepText.setText("총 졸음쉼터 이용 횟수 : "+ Integer.valueOf(useSleepinessCenter) +"회\n평균 졸음쉼터 이용 횟수 :"+ String.format("%.2f", avgSleep) +"회");
+        violationText.setText("총 칼치기 횟수 : "+ Integer.valueOf(violationKal) +"회\n평균 칼치기 횟수 :"+ String.format("%.2f", avgKalViolation)+"회");
         missionText.setText("오늘의 미션! 완수 :"+ mission +"회");
 
         //Title Bar Back Button Visible
