@@ -15,20 +15,28 @@ public class RacingService extends Service{
 
     String email;
 
+    //SoundManager 정의
+    SoundManager sManager;
 
     public RacingService() {
 
     }
 
-
-
-
     @Override
-    public int onStartCommand(Intent intent,int flag ,int startId){
-
-
+    public int onStartCommand(Intent intent,int flag ,int startId) {
         Log.d("slog","onStartCommand()");
         super.onStartCommand(intent,flag, startId);
+
+        //효과음 파일 로드
+        sManager = SoundManager.getInstance();
+        sManager.init(this);
+
+        sManager.addSound(0, R.raw.sonar); //매칭
+        sManager.addSound(1, R.raw.victory2); //승리 시
+        sManager.addSound(2, R.raw.lose3); //패배 시
+        sManager.addSound(3, R.raw.ding); //위반1
+        sManager.addSound(4, R.raw.up); //증가
+        sManager.addSound(5, R.raw.down); //빠져나감
 
         //내용
         email = intent.getStringExtra("keyEmail");
@@ -80,9 +88,12 @@ public class RacingService extends Service{
 
         public void run() {
             ttsClient = new TextToSpeech(getApplicationContext(),this);
+
             try{
+                sManager.play(0);
                 Thread.sleep(3000);
             }catch(Exception e){}
+
             speakTTS("착한 레이싱을 시작하겠습니다");
 
             player = new Player(email);
@@ -120,18 +131,25 @@ public class RacingService extends Service{
 
                         if(myWin) {
                             createDatabase(DBNAME);
-                            updateData(player,true);
-                            try{
+                            updateData(player, true);
+                            try {
+                                sManager.play(1);
                                 Thread.sleep(3000);
-                            }catch(Exception e){}
+                            } catch (Exception e) {
+
+                            }
                             speakTTS("게임에 승리하였습니다");
                         }
+
                         else {
                             createDatabase(DBNAME);
                             updateData(player,false);
-                            try{
+                            try {
+                                sManager.play(2);
                                 Thread.sleep(3000);
-                            }catch(Exception e){}
+                            } catch(Exception e){
+
+                            }
                             speakTTS("게임에 패배하였습니다");
                         }
 
@@ -139,16 +157,29 @@ public class RacingService extends Service{
                     }
 
 
-                }else{
+                } else {
                     //역전시 음성
                     if(myScore == yourScore ){//동점이 된 경우
+                        try{
+                            sManager.play(3);
+                            Thread.sleep(2000);
+                        }catch(Exception e){}
                         speakTTS("동점입니다");
                         myWin = false;
                     }else if(myWin && (myScore<yourScore)){//본인이 이기고있다가 역전당한경우
+                        try{
+                            sManager.play(5);
+                            Thread.sleep(2000);
+                        }catch(Exception e){}
                         speakTTS("상대방이 " + yourScore+ "점으로 역전당했습니다");
                         myWin = false;
                     }else if(!myWin && (myScore > yourScore) ){//본인이 지고있다가 역전한경우
+                        try{
+                            sManager.play(4);
+                            Thread.sleep(2000);
+                        }catch(Exception e){}
                         speakTTS("당신은 " + myScore + "점으로 역전했습니다");
+
                         myWin = true;
                     }
 
@@ -158,13 +189,10 @@ public class RacingService extends Service{
             }
         }
 
-
-
         @Override
         public void onInit(int i){
             //ttsClient.speak("TTS",TextToSpeech.QUEUE_FLUSH, null);
         }
-
 
         private void speakTTS(String text){
             AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
@@ -183,10 +211,7 @@ public class RacingService extends Service{
                 };
                 new Timer().schedule(task, 3000);
             }
-
         }
-
-
 
 
         //db 생성
@@ -262,8 +287,9 @@ public class RacingService extends Service{
         }
     }
 
-    class InGameThread extends Thread{
-        public void run(){
+    class InGameThread extends Thread {
+        public void run() {
+
             //Toast.makeText(MainActivity.this, "ingamethread 실행", Toast.LENGTH_SHORT).show();
             //급가속 급감속에 따라 점수 차감 (-50점)
             //속도를 측정하고 위반하면 점수 차감 (-10점) / 적정속도일 경우 +1점 -> 제한속도 불러오기
@@ -301,35 +327,31 @@ public class RacingService extends Service{
                     // 현재 위치를 통해 도로 별 제한속도를 구한다(공공데이터 사용).
                     // 임시로 110km/h로 지정하였음.
                     // 110km/h = 30.5555m/s
-                    if(30.5555f <= InGameStatus.getVelocity()){
-
+                    if(30.5555f <= InGameStatus.getVelocity()) {
                         InGameStatus.setTotalScore(0, -10); //점수 10 감소
                         InGameStatus.setViolationVelocity(1); // 속도 위반 횟수 1 증가
-
                     }
                     //15km/h = 4.1666 m/s
-                    else if(4.16666f <= InGameStatus.getVelocity()){
+                    else if(4.16666f <= InGameStatus.getVelocity()) {
                         //규정 속도롤 지켰을 때는 1초마다 점수가 올라간다.
                         InGameStatus.setTotalScore(0, +10);
                         driveCount++;
                     } // 위의 상황이 아닌 경우 점수 변동 없음
 
-
                     //3.졸음쉼터
                     //현재 졸음쉼터에 있는지 판단하는 메서드(isAtSleepinessArea) 호출
-                    if(LocationOfSleepinessArea.isAtSleepinessArea(InGameStatus.getLocationX(),InGameStatus.getLocationY())){
+                    if(LocationOfSleepinessArea.isAtSleepinessArea(InGameStatus.getLocationX(),InGameStatus.getLocationY())) {
                         InGameStatus.setTotalScore(0, +10); //1점 증가
                         InGameStatus.setUseSleepinessCenter(1); // 졸음쉼터 이용 횟수 1 증가
                     }
 
-
                     //4. 칼치기
                     //현재 국도에 위치한 경우
-                    if(LocationOfIC.isOnNationalHighway(InGameStatus.getLocationX(),InGameStatus.getLocationY())){
+                    if(LocationOfIC.isOnNationalHighway(InGameStatus.getLocationX(),InGameStatus.getLocationY())) {
 
                         // 옆쪽으로 가속하고 있는 경우 칼치기 카운트 증가
                         // 옆쪽 방향으로 가속이 3.0m/s^2 이상일 경우
-                        if(2.0f<=Math.abs(InGameStatus.getAccelerationY())){
+                        if(2.0f<=Math.abs(InGameStatus.getAccelerationY())) {
                             InGameStatus.setKalCount(1);
                         } else {
                             //옆으로 가속하지 않는 경우, 칼치기 카운트 감소.
@@ -341,24 +363,17 @@ public class RacingService extends Service{
                         if(10 <= InGameStatus.getKalCount()){
                             InGameStatus.setViolationKal(1);
                         }
-
                     }
 
                     //미션 성공 조건 : 5분 이상의 주행 동안 가속도 위반 횟수 5번을 넘지 않는다.
-                    if(InGameStatus.getMission() == 0 && InGameStatus.getViolationAccel() < 5 &&  300 < driveCount){
+                    if(InGameStatus.getMission() == 0 && InGameStatus.getViolationAccel() < 5 &&  300 < driveCount) {
                         InGameStatus.setMission();
                     }
 
-                } catch (InterruptedException e){
-
+                } catch (InterruptedException e) {
 
                 }
-
             }
-
-
-
         }
     }
-
 }

@@ -70,6 +70,7 @@ public class EditActivity extends AppCompatActivity {
     String path2;
 
     String mmr;
+    byte[] photo;
 
     ImageView editProfileEdge;
 
@@ -99,6 +100,7 @@ public class EditActivity extends AppCompatActivity {
         Intent LoginToMainIntent = getIntent();
         email = LoginToMainIntent.getStringExtra("keyEmail");
 
+/*
         createDatabase(DBNAME);
         String sql = "select * from " + PLAYERTABLE;
         Cursor cursor = db.rawQuery(sql, null);
@@ -111,6 +113,7 @@ public class EditActivity extends AppCompatActivity {
             emailFromDB = cursor.getString(0);
             if(emailFromDB.equals(email)) {
                 mmr = cursor.getString(8);
+                photo = cursor.getBlob(11);
                 break;
             }
         }
@@ -118,6 +121,7 @@ public class EditActivity extends AppCompatActivity {
         editProfileEdge = (ImageView) findViewById(R.id.profileEdge);
 
         int integerMmr = Integer.valueOf(mmr);
+
         if(integerMmr<100){
             editProfileEdge.setImageResource(R.drawable.rank_img_bronze);
         }
@@ -136,7 +140,7 @@ public class EditActivity extends AppCompatActivity {
         else {
 
         }
-
+*/
 
         //Title Bar Back Button Visible
         ActionBar actionBar = getSupportActionBar();
@@ -680,16 +684,12 @@ public class EditActivity extends AppCompatActivity {
 
     //db 생성
     private void createDatabase(String name){
-        try {
+        try{
+
             db = openOrCreateDatabase(name, MODE_ENABLE_WRITE_AHEAD_LOGGING,null);
-            Toast.makeText(this, "db생성 성공", Toast.LENGTH_SHORT).show();
             createdDB = true;
-            try {
-                if(createdDB) {
-                    createTable();
-                }
-            } catch(Exception e){}
-        } catch(Exception ex) {
+
+        }catch(Exception ex){
             Toast.makeText(this, "db 생성 안됨", Toast.LENGTH_SHORT).show();
         }
     }
