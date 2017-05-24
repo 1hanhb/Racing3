@@ -32,13 +32,13 @@
             android:background="@drawable/nameplate_icon"/>
 
         <TextView
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="22dp"
             android:layout_marginLeft="10dp"
             android:id="@+id/nameText"
             android:layout_toRightOf="@+id/nameplate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="이름 : \n이메일 : "
+            android:text="이름 : \n이메일 : \n전적 : 0전 0승 0패"
             android:textSize="15dp" />
 
 
@@ -103,7 +103,7 @@
             android:id="@+id/velocityText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="총 속도 위반 횟수 : (분)\n총 가속도 위반 횟수 : (분)\n게임 당 평균 속도 위반 횟수 : (분)\n게임 당 평균 가속도 위반 횟수 : (분)"
+            android:text="총 속도 위반 횟수 : \n총 가속도 위반 횟수 : \n게임 당 평균 속도 위반 횟수 : \n게임 당 평균 가속도 위반 횟수 : "
             android:layout_marginLeft="10dp"
             android:textSize="13dp"/>
 
@@ -166,10 +166,5 @@
             android:textSize="13dp"/>
 
     </RelativeLayout>
-
-
-
-
-
 
 </RelativeLayout>
