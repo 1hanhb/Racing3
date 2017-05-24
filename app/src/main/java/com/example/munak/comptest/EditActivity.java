@@ -100,7 +100,6 @@ public class EditActivity extends AppCompatActivity {
         Intent LoginToMainIntent = getIntent();
         email = LoginToMainIntent.getStringExtra("keyEmail");
 
-/*
         createDatabase(DBNAME);
         String sql = "select * from " + PLAYERTABLE;
         Cursor cursor = db.rawQuery(sql, null);
@@ -118,7 +117,7 @@ public class EditActivity extends AppCompatActivity {
             }
         }
 
-        editProfileEdge = (ImageView) findViewById(R.id.profileEdge);
+        editProfileEdge = (ImageView) findViewById(R.id.editProfileEdge);
 
         int integerMmr = Integer.valueOf(mmr);
 
@@ -140,7 +139,6 @@ public class EditActivity extends AppCompatActivity {
         else {
 
         }
-*/
 
         //Title Bar Back Button Visible
         ActionBar actionBar = getSupportActionBar();
@@ -266,8 +264,6 @@ public class EditActivity extends AppCompatActivity {
                 //queryData();
             }
         });
-
-
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -693,7 +689,7 @@ public class EditActivity extends AppCompatActivity {
             Toast.makeText(this, "db 생성 안됨", Toast.LENGTH_SHORT).show();
         }
     }
-
+/*
     //table 생성
     private void createTable() {
         if(createdDB) {
@@ -832,5 +828,5 @@ public class EditActivity extends AppCompatActivity {
         return bitmap;
     }
 
-
+*/
 }

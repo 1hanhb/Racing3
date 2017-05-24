@@ -304,10 +304,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
 
-
-        profile = (ImageView) findViewById(R.id.profile);
-
-
         createDatabase(DBNAME);
         String sql = "select * from " + PLAYERTABLE;
         Cursor cursor = db.rawQuery(sql, null);
@@ -331,6 +327,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         mainNameTV = (TextView) findViewById(R.id.mainNameTV);
         mainNameTV.setText(String.valueOf(name));
+
+        profile = (ImageView) findViewById(R.id.profile);
 
         /*
         if(photo != null) {
