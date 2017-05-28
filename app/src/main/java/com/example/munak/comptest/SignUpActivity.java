@@ -69,7 +69,8 @@ public class SignUpActivity extends AppCompatActivity {
 
                 Player player = new Player(name, email, password);
 
-                //deleteDatabase(DBNAME);
+                deleteDatabase(DBNAME);
+
                 createDatabase(DBNAME);
 
                 if(insertData(PLAYERTABLE,player)) {
@@ -79,6 +80,8 @@ public class SignUpActivity extends AppCompatActivity {
                     startActivity(signUpToLoginIntent);
                     finish();
                 }
+
+
             }
         });
 

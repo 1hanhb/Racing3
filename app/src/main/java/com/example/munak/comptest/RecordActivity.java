@@ -127,7 +127,7 @@ public class RecordActivity extends AppCompatActivity {
 
         nameText.setText("이름 :"+ name +"\n이메일 : "+emailFromDB + "\n전적 : "+Integer.valueOf(competitionCount)+"전 "+
                 Integer.valueOf(winCount) +"승 "+(Integer.valueOf(competitionCount)-Integer.valueOf(winCount)) +"패"
-                +"("+String.format("%.1f", (double)Integer.valueOf(winCount)/Integer.valueOf(competitionCount)*100)+ "%)");
+                +"("+ (Integer.valueOf(competitionCount) == 0 ? "0.0" : String.format("%.1f", (double)Integer.valueOf(winCount)/Integer.valueOf(competitionCount)*100))+ "%)");
         rankText.setText("계급 : " + tier);
 
         double avgAccelViolation = Integer.valueOf(competitionCount) == 0 ?  0.0f: (double)Integer.valueOf(violationAccel)/Integer.valueOf(competitionCount);

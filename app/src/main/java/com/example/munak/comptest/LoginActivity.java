@@ -28,6 +28,8 @@ public class LoginActivity extends AppCompatActivity {
     EditText editTextId, editTextPassword;
     String email;
 
+    boolean check = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,10 +55,13 @@ public class LoginActivity extends AppCompatActivity {
 
                 Player player = new Player(id, password);
 
-                if(loginCheck(player)){
+                check = loginCheck(player);
+
+                if(check) {
                     Intent LoginToMainIntent = new Intent(LoginActivity.this, MainActivity.class);
-                    LoginToMainIntent.putExtra("keyEmail",id);
+                    LoginToMainIntent.putExtra("keyEmail", id);
                     startActivity(LoginToMainIntent);
+
                     finish();
                 }
             }
@@ -82,8 +87,8 @@ public class LoginActivity extends AppCompatActivity {
 
             if (cursor != null) {
                 int count = cursor.getCount();
-                String email="";
-                String password="";
+                String email = null;
+                String password = null;
                 for (int i = 0; i < count; i++) {
                     cursor.moveToNext();
 

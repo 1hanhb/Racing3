@@ -65,7 +65,14 @@ public class RankActivity extends AppCompatActivity {
         ImageView rank05 = (ImageView) findViewById(R.id.rankProfImg05);
         ImageView rank06 = (ImageView) findViewById(R.id.rankProfImg06);
 
+        ImageView rankEdge01 = (ImageView) findViewById(R.id.rankProfEdgeImg01);
+        ImageView rankEdge02 = (ImageView) findViewById(R.id.rankProfEdgeImg02);
+        ImageView rankEdge03 = (ImageView) findViewById(R.id.rankProfEdgeImg03);
+        ImageView rankEdge04 = (ImageView) findViewById(R.id.rankProfEdgeImg04);
+        ImageView rankEdge05 = (ImageView) findViewById(R.id.rankProfEdgeImg05);
         ImageView rankEdge06 = (ImageView) findViewById(R.id.rankProfEdgeImg06);
+
+        //rankEdge03.setImageResource(R.drawable.rank_img_gold2);
 
 
         if(getImage2 != null) {
@@ -122,6 +129,27 @@ public class RankActivity extends AppCompatActivity {
 
         rank06.setBackground(new ShapeDrawable(new OvalShape()));
         rank06.setClipToOutline(true);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        findViewById(R.id.rankProfImg01).setBackground(null);
+        findViewById(R.id.rankProfImg02).setBackground(null);
+        findViewById(R.id.rankProfImg03).setBackground(null);
+        findViewById(R.id.rankProfImg04).setBackground(null);
+        findViewById(R.id.rankProfImg05).setBackground(null);
+        findViewById(R.id.rankProfImg06).setBackground(null);
+
+        findViewById(R.id.rankProfEdgeImg01).setBackground(null);
+        findViewById(R.id.rankProfEdgeImg02).setBackground(null);
+        findViewById(R.id.rankProfEdgeImg03).setBackground(null);
+        findViewById(R.id.rankProfEdgeImg04).setBackground(null);
+        findViewById(R.id.rankProfEdgeImg05).setBackground(null);
+        findViewById(R.id.rankProfEdgeImg06).setBackground(null);
+
+        System.gc();
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {

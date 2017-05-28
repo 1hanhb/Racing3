@@ -236,6 +236,17 @@ public class EditActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        findViewById(R.id.editProfile).setBackground(null);
+
+        findViewById(R.id.editProfileEdge).setBackground(null);
+
+        System.gc();
+    }
+
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
