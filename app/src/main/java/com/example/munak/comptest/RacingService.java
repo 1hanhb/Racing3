@@ -23,6 +23,12 @@ public class RacingService extends Service{
     boolean restartable = true;
     boolean first = true;
 
+    int count=0;
+    boolean myWin = false;
+    int myScore=0;
+    int yourScore=0;
+    int stop=0;
+
     public RacingService() {
 
     }
@@ -32,8 +38,28 @@ public class RacingService extends Service{
         public void handleMessage(Message msg){
             if(msg.what ==1){
                 Toast.makeText(RacingService.this, "상대방 찾는중", Toast.LENGTH_SHORT).show();
-            }
+            }else if(msg.what ==2) {
+                try {
+                    Thread.sleep(5000);
+                } catch (Exception e) {
+                }
 
+                int a = (int) (Math.random() * 4);
+                switch (a) {// 송중기, 남궁민, 원빈, Emma1, Emma2
+                    case 0:
+                        Toast.makeText(RacingService.this, "송중기님과 게임을 시작합니다", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 1:
+                        Toast.makeText(RacingService.this, "남궁민님과 게임을 시작합니다", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 2:
+                        Toast.makeText(RacingService.this, "원빈님과 게임을 시작합니다", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 3:
+                        Toast.makeText(RacingService.this, "Emma님과 게임을 시작합니다", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
         }
     };
 
@@ -80,11 +106,7 @@ public class RacingService extends Service{
 
 
     public class Racing extends Thread implements TextToSpeech.OnInitListener{
-        int count=0;
-        boolean myWin = false;
-        int myScore=0;
-        int yourScore=0;
-        int stop=0;
+
 
         final private String DBNAME = "playerinfo.db";
         final private String PLAYERTABLE = "player";
@@ -182,7 +204,7 @@ public class RacingService extends Service{
                 yourScore = yourScore + (int)((player.getTotalScore()-myScore) * Math.random() * 2);
                 myScore = player.getTotalScore();
 
-                if(count==2){
+                if(count==4){
                     //본인 스코어, 상대 스코어 음성으로
                     int dif = myScore - yourScore;
 
@@ -204,7 +226,7 @@ public class RacingService extends Service{
 
 
                     stop++;
-                    if(stop==2){//stop 1당 30초
+                    if(stop==4){//stop 1당 1분
                         InGameStatus.setStart(false);
 
                         if(myWin) {
@@ -269,7 +291,7 @@ public class RacingService extends Service{
                         break;
                     }
                 }
-                count = (count+1)%3;
+                count = (count+1)%5;
             }
             restartable = true;
         }
@@ -277,17 +299,19 @@ public class RacingService extends Service{
         public void losingGame(){
             //myScore < yourScore
             int a;
-            a = (int)(Math.random()*2)+1;
+            a = (int)(Math.random()*4)+1;
             switch(a) {
                 case 1:
                     speakTTS("상대방 점수는 " + yourScore+ "점으로 역전당했습니다");
                     break;
                 case 2:
-                    speakTTS("지고있지롱 ㅋㅋ 상대방 " + yourScore +"다");
+                    speakTTS("뒷좌석에 할머니 할아버지가 타고계신다 생각하고 운전해보세요");
                     break;
                 case 3:
+                    speakTTS("패배의 기운이 느껴집니다");
                     break;
                 case 4:
+                    speakTTS("분발하십시오");
                     break;
             }
 
@@ -298,17 +322,19 @@ public class RacingService extends Service{
         public void winningGame(){
             // myScore > yourScore
             int a;
-            a = (int)(Math.random()*2)+1;
+            a = (int)(Math.random()*4)+1;
             switch(a) {
                 case 1:
                     speakTTS("당신의 점수는 " + myScore + "점으로 역전했습니다");
                     break;
                 case 2:
-                    speakTTS("이기고 있네? 정말 잘하는구나");
+                    speakTTS("이대로만 간다면 승리는 문제 없습니다");
                     break;
                 case 3:
+                    speakTTS("승리의 기운이 느껴집니다");
                     break;
                 case 4:
+                    speakTTS("방심은 금물입니다");
                     break;
             }
 
@@ -316,17 +342,19 @@ public class RacingService extends Service{
         public void equalScoring(){
             //myScore == yourScore
             int a;
-            a = (int)(Math.random()*2)+1;
+            a = (int)(Math.random()*1)+1;
             switch(a) {
                 case 1:
                     speakTTS("동점입니다");
                     break;
                 case 2:
-                    speakTTS("언제까지 동점할거냐 좀 이겨보자");
+                    speakTTS("");
                     break;
                 case 3:
+                    speakTTS("");
                     break;
                 case 4:
+                    speakTTS("");
                     break;
             }
 
@@ -529,15 +557,11 @@ public class RacingService extends Service{
             handler = mhandler;
         }
         public void run() {
-            InGameStatus.setStopSwitch(false);
-            restartable = true;
-            first = true;
-
+            initializeVariables1();
 
             while(!InGameStatus.getStopSwitch()){
                 if (restartable) {
-                    restartable = false;
-
+                    initializeVariables2();
                     searchingGame();
 
                     InGameThread inGameThread = new InGameThread();
@@ -562,6 +586,35 @@ public class RacingService extends Service{
             try{
                 Thread.sleep(5000);
             }catch(Exception e){}
+
+            Message msg2 = new Message();
+            msg2.what = 2;
+            handler.sendMessage(msg2);
+            try{
+                Thread.sleep(3000);
+            }catch(Exception ee){}
+        }
+
+        public void initializeVariables1(){
+            InGameStatus.setStopSwitch(false);
+            restartable = true;
+            first = true;
+
+            count=0;
+            myWin = false;
+            myScore=0;
+            yourScore=0;
+            stop=0;
+        }
+
+        public void initializeVariables2(){
+            restartable = false;
+
+            count=0;
+            myWin = false;
+            myScore=0;
+            yourScore=0;
+            stop=0;
         }
 
     }

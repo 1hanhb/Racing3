@@ -127,13 +127,13 @@ public class RecordActivity extends AppCompatActivity {
 
         nameText.setText("이름 :"+ name +"\n이메일 : "+emailFromDB + "\n전적 : "+Integer.valueOf(competitionCount)+"전 "+
                 Integer.valueOf(winCount) +"승 "+(Integer.valueOf(competitionCount)-Integer.valueOf(winCount)) +"패"
-                +"("+String.format("%.1f", (double)Integer.valueOf(winCount)/Integer.valueOf(competitionCount))+ "%)");
+                +"("+String.format("%.1f", (double)Integer.valueOf(winCount)/Integer.valueOf(competitionCount)*100)+ "%)");
         rankText.setText("계급 : " + tier);
 
-        double avgAccelViolation = Integer.valueOf(competitionCount) == 0 ?  0.0f: Integer.valueOf(violationAccel)/Integer.valueOf(competitionCount);
-        double avgVelViolation = Integer.valueOf(competitionCount) == 0 ?  0.0f: Integer.valueOf(violationVelocity)/Integer.valueOf(competitionCount);
-        double avgKalViolation = Integer.valueOf(competitionCount) == 0 ?  0.0f: Integer.valueOf(violationKal)/Integer.valueOf(competitionCount);
-        double avgSleep = Integer.valueOf(competitionCount) == 0 ?  0.0f: Integer.valueOf(useSleepinessCenter)/Integer.valueOf(competitionCount);
+        double avgAccelViolation = Integer.valueOf(competitionCount) == 0 ?  0.0f: (double)Integer.valueOf(violationAccel)/Integer.valueOf(competitionCount);
+        double avgVelViolation = Integer.valueOf(competitionCount) == 0 ?  0.0f: (double)Integer.valueOf(violationVelocity)/Integer.valueOf(competitionCount);
+        double avgKalViolation = Integer.valueOf(competitionCount) == 0 ?  0.0f: (double)Integer.valueOf(violationKal)/Integer.valueOf(competitionCount);
+        double avgSleep = Integer.valueOf(competitionCount) == 0 ?  0.0f: (double)Integer.valueOf(useSleepinessCenter)/Integer.valueOf(competitionCount);
 
         velocityText.setText("\n총 속도 위반 횟수 : "+ Integer.valueOf(violationVelocity) +"회\n총 가속도 위반 횟수 : "+Integer.valueOf(violationAccel)+
                 "회\n평균 속도 위반 횟수 : "+ String.format("%.2f", avgVelViolation)+"회\n평균 가속도 위반 횟수 :"+ String.format("%.2f", avgAccelViolation) +"회");
@@ -175,12 +175,10 @@ public class RecordActivity extends AppCompatActivity {
         }
     }
 
-
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                //NavUtils.navigateUpFromSameTask(this);
-                finish();
+                NavUtils.navigateUpFromSameTask(this);
                 return true;
 
             default:

@@ -37,6 +37,7 @@ public class RankActivity extends AppCompatActivity {
     String photoPath;
     String photoFile;
     int mmr;
+    String tier;
 
     byte[] getImage2;
     Bitmap saveImage2;
@@ -81,22 +82,27 @@ public class RankActivity extends AppCompatActivity {
         if(mmr<=100) {
             rankTier06.setText("BRONZE");
             rankEdge06.setImageResource(R.drawable.rank_img_bronze);
+            tier = "BRONZE";
         }
         else if(mmr<=200) {
             rankTier06.setText("SILVER");
             rankEdge06.setImageResource(R.drawable.rank_img_silver);
+            tier = "SILVER";
         }
         else if(mmr<=300) {
             rankTier06.setText("GOLD");
             rankEdge06.setImageResource(R.drawable.rank_img_gold);
+            tier = "GOLD";
         }
         else if(mmr<=400) {
             rankTier06.setText("PLATINUM");
             rankEdge06.setImageResource(R.drawable.rank_img_platinum);
+            tier = "PLATINUM";
         }
         else {
             rankTier06.setText("MASTER");
             rankEdge06.setImageResource(R.drawable.rank_img_master);
+            tier = "MASTER";
         }
 
         rank01.setBackground(new ShapeDrawable(new OvalShape()));
@@ -134,7 +140,7 @@ public class RankActivity extends AppCompatActivity {
     private void createDatabase(String name){
         try {
             db = openOrCreateDatabase(name, MODE_ENABLE_WRITE_AHEAD_LOGGING,null);
-            Toast.makeText(this, "db생성 성공", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "db생성 성공", Toast.LENGTH_SHORT).show();
             createdDB = true;
         } catch(Exception ex) {
             Toast.makeText(this, "db 생성 안됨", Toast.LENGTH_SHORT).show();
@@ -197,15 +203,46 @@ public class RankActivity extends AppCompatActivity {
         try {
             final KakaoLink kakaoLink = KakaoLink.getKakaoLink(this);
             final KakaoTalkLinkMessageBuilder kakaoTalkLinkMessageBuilder = kakaoLink.createKakaoTalkLinkMessageBuilder();
+/*
+            switch (v.getId())
+            {
+                case R.id.rankSendButton01:
 
+
+                    break;
+
+                case R.id.rankSendButton02:
+
+
+                    break;
+
+                case R.id.rankSendButton03:
+
+
+                    break;
+
+                case R.id.rankSendButton04:
+
+
+                    break;
+
+                case R.id.rankSendButton05:
+
+
+                    break;
+
+
+
+            }
+*/
             kakaoTalkLinkMessageBuilder.addText("[착한 레이싱]" +
-                    "\n전국은 지금 착한 레이싱 열풍!" +
-                    "\n신명나게 한 판 놀아보세~!" +
-                    "\n아래 버튼을 터치하고, 착한" +
-                    " 레이싱을 시작해보세요. 짜릿한 승부가" +
-                    " 당신을 기다리고 있습니다!");
+                    "\n앗! " + name + "(" + tier + ") 이(가) " +
+                    "\n승부를 걸어왔다! " +
+                    "\n" + name + "(" + tier + ") 의 " +
+                    "\n도발 공격! " +
+                    "\n효과는 굉장했다! ");
 
-            //kakaoTalkLinkMessageBuilder.addAppButton("착한 레이싱 다운받기");
+            kakaoTalkLinkMessageBuilder.addAppButton("착한 레이싱 다운받기");
 
             kakaoLink.sendMessage(kakaoTalkLinkMessageBuilder, this);
         } catch (KakaoParameterException e) {

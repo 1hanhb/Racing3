@@ -124,11 +124,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+/*
         //Slide Menu
         lvNavList = (ListView)findViewById(R.id.lv_activity_main_nav_list);
         flContainer = (LinearLayout)findViewById(R.id.fl_activity_main_container);
-
+*/
         //keyE-Mail
         Intent LoginToMainIntent = getIntent();
         email = LoginToMainIntent.getStringExtra("keyEmail");
@@ -366,7 +366,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         profile.setBackground(new ShapeDrawable(new OvalShape()));
         profile.setClipToOutline(true);
 
-
+/*
         //test button click event
         Button testButton = (Button) findViewById(R.id.testButton);
         testButton.setOnClickListener(new View.OnClickListener() {
@@ -376,6 +376,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 startActivity(intent);
             }
         });
+        */
     }
 
     //START

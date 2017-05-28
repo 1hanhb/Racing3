@@ -67,7 +67,7 @@
                             android:layout_width="55dp"
                             android:layout_height="55dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/emma22"/>
+                            android:src="@drawable/img0001"/>
 
                     </FrameLayout>
 
@@ -85,7 +85,7 @@
                         android:id="@+id/rankName01"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="착한레이서"
+                        android:text="송중기"
                         android:textSize="20dp"/>
 
                     <TextView
@@ -153,7 +153,7 @@
                             android:layout_width="55dp"
                             android:layout_height="55dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/emma22"/>
+                            android:src="@drawable/img002"/>
 
                     </FrameLayout>
 
@@ -171,7 +171,7 @@
                         android:id="@+id/rankName02"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="한효병"
+                        android:text="남궁민"
                         android:textSize="20dp"/>
 
                     <TextView
@@ -239,7 +239,7 @@
                             android:layout_width="55dp"
                             android:layout_height="55dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/emma22"/>
+                            android:src="@drawable/img004"/>
 
                     </FrameLayout>
 
@@ -257,7 +257,7 @@
                         android:id="@+id/rankName03"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="이기혁"
+                        android:text="원빈"
                         android:textSize="20dp"/>
 
                     <TextView
@@ -429,7 +429,7 @@
                         android:id="@+id/rankName05"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="김성수"
+                        android:text="emma2"
                         android:textSize="20dp"/>
 
                     <TextView
@@ -527,6 +527,7 @@
 
                 </LinearLayout>
 
+                <!--
                 <ImageButton
                     android:id="@+id/rankSendButton06"
                     android:layout_alignParentRight="true"
@@ -536,6 +537,7 @@
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:background="@drawable/rank_sword"/>
+                -->
 
             </RelativeLayout>
 

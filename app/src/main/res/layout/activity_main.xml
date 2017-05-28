@@ -216,16 +216,20 @@
                     android:layout_marginRight="15dp"
                     android:src="@drawable/line_logo"/>
 
+                <!--
                 <Button
                     android:id="@+id/testButton"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:background="#ff00ff"
                     android:text="test" />
+                -->
 
             </LinearLayout>
 
         </LinearLayout>
+
+        <!--
 
         <ListView
             android:id="@+id/lv_activity_main_nav_list"
@@ -236,6 +240,8 @@
             android:choiceMode="singleChoice"
             android:divider="#FF555555"
             android:dividerHeight="3dp"/>
+
+            -->
 
     </android.support.v4.widget.DrawerLayout>
 </LinearLayout>
