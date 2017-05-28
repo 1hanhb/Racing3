@@ -240,7 +240,10 @@ public class RankActivity extends AppCompatActivity {
                     "\n승부를 걸어왔다! " +
                     "\n" + name + "(" + tier + ") 의 " +
                     "\n도발 공격! " +
-                    "\n효과는 굉장했다! ");
+                    "\n효과는 굉장했다! " +
+                    "\n아래 버튼을 터치하고, 착한" +
+                    " 레이싱을 시작해보세요. 짜릿한 승부가" +
+                    " 당신을 기다리고 있습니다!");
 
             kakaoTalkLinkMessageBuilder.addAppButton("착한 레이싱 다운받기");
 

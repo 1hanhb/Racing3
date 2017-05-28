@@ -33,7 +33,7 @@ public class RacingService extends Service{
 
     }
 
-    Handler mHandler = new Handler(){
+    Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg){
             if(msg.what ==1){
@@ -42,19 +42,24 @@ public class RacingService extends Service{
                 try {
                     Thread.sleep(5000);
                 } catch (Exception e) {
+
                 }
 
                 int a = (int) (Math.random() * 4);
+
                 switch (a) {// 송중기, 남궁민, 원빈, Emma1, Emma2
                     case 0:
                         Toast.makeText(RacingService.this, "송중기님과 게임을 시작합니다", Toast.LENGTH_SHORT).show();
                         break;
+
                     case 1:
                         Toast.makeText(RacingService.this, "남궁민님과 게임을 시작합니다", Toast.LENGTH_SHORT).show();
                         break;
+
                     case 2:
                         Toast.makeText(RacingService.this, "원빈님과 게임을 시작합니다", Toast.LENGTH_SHORT).show();
                         break;
+                    
                     case 3:
                         Toast.makeText(RacingService.this, "Emma님과 게임을 시작합니다", Toast.LENGTH_SHORT).show();
                         break;
