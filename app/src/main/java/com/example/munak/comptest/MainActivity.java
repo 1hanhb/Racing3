@@ -56,15 +56,11 @@ import java.net.URLEncoder;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
-    int RESULT_FROM_EDIT = 11;
+    private static final int RESULT_FROM_EDIT = 11;
 
     Sensor accelerometer;
     SensorManager sensorManager;
     LocationManager locationManager;
-
-    //permissionRequestCode
-    private static final int REQUEST_EXTERNAL_STORAGE_CODE = 1;
-    boolean permissionCheck = false;
 
     String email;
     boolean isStart = false;
@@ -123,33 +119,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 //        }
     }
 */
-
-    /*public void onBackPressed() {
-        // TODO Auto-generated method stub
-        // super.onBackPressed(); //지워야 실행됨
-
-        Builder d = new AlertDialog.Builder(this);
-
-        d.setMessage("정말 종료하시겠습니까?");
-
-        d.setPositiveButton("예", new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface dialog, int which) {
-                // process전체 종료
-                finish();
-            }
-        });
-
-        d.setNegativeButton("아니요", new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        d.show();
-    }*/
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -311,6 +280,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         });
 
         //Instagram Button Click Event
+        /*
         ImageButton mainInstagram = (ImageButton) findViewById(R.id.mainInstagram);
         mainInstagram.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -318,6 +288,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 shareInstagram();
             }
         });
+        */
 
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
@@ -394,8 +365,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         profile.setBackground(new ShapeDrawable(new OvalShape()));
         profile.setClipToOutline(true);
-
-
 
 
         //test button click event
@@ -525,9 +494,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void shareInstagram()
     {
         //외부저장 권한 요청(안드로이드 6.0 이후 필수)
-        onRequestPermission();
+        //onRequestPermission();
 
-        if(permissionCheck) {
+        //if(permissionCheck) {
             Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.image);
             String storage = Environment.getExternalStorageDirectory().getAbsolutePath();
             String fileName = "이미지명.png";
@@ -575,41 +544,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 e.printStackTrace();
 
             }
-        }
-    }
-
-    public void onRequestPermission()
-    {
-        int permissionReadStorage = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
-        int permissionWriteStorage = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        if(permissionReadStorage == PackageManager.PERMISSION_DENIED || permissionWriteStorage == PackageManager.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_STORAGE_CODE);
-        }
-        else {
-            permissionCheck = true; //이미 허용되어 있으므로 PASS
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_EXTERNAL_STORAGE_CODE:
-                for (int i = 0; i < permissions.length; i++) {
-                    String permission = permissions[i];
-                    int grantResult = grantResults[i];
-                    if (permission.equals(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                        if(grantResult == PackageManager.PERMISSION_GRANTED) {
-                            //Toast.makeText(this, "허용했으니 가능함", Toast.LENGTH_LONG).show();
-                            permissionCheck = true;
-                        } else {
-                            //Toast.makeText(this, "허용하지 않으면 공유 못함 ㅋ", Toast.LENGTH_LONG).show();
-                            permissionCheck = false;
-                        }
-                    }
-                }
-                break;
-        }
+        //}
     }
 
     private void createDatabase(String name){

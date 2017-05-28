@@ -47,7 +47,7 @@ public class SignUpActivity extends AppCompatActivity {
 
                 Player player = new Player(name, email, password);
 
-                deleteDatabase(DBNAME);
+                //deleteDatabase(DBNAME);
                 createDatabase(DBNAME);
 
                 if(insertData(PLAYERTABLE,player)) {
@@ -118,7 +118,7 @@ public class SignUpActivity extends AppCompatActivity {
     private void createDatabase(String name){
         try {
             db = openOrCreateDatabase(name, MODE_ENABLE_WRITE_AHEAD_LOGGING,null);
-            Toast.makeText(this, "db생성 성공", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "db생성 성공", Toast.LENGTH_SHORT).show();
             createdDB = true;
             try {
                 if(createdDB) {
@@ -191,7 +191,9 @@ public class SignUpActivity extends AppCompatActivity {
             try {
                 db.execSQL(sql);
                 Toast.makeText(this, "테이블 제거", Toast.LENGTH_SHORT).show();
-            }catch(Exception e){Toast.makeText(this, "테이블 제거 실패", Toast.LENGTH_SHORT).show();}
+            } catch(Exception e) {
+                Toast.makeText(this, "테이블 제거 실패", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -221,43 +223,11 @@ public class SignUpActivity extends AppCompatActivity {
                                 + cursor.getInt(10) + "/"
                                 + cursor.getString(11) + "/"
                                 + cursor.getInt(12);
-                        Toast.makeText(this, i + "번째 : " + data, Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(this, i + "번째 : " + data, Toast.LENGTH_SHORT).show();
                     }
                 }
             } catch(Exception e){
                 Toast.makeText(this, "query 실패", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    //table에서 data제거
-    private void removeData(String email){
-        if(createdDB) {
-            String sql = "delete from " + PLAYERTABLE + " where email = " + email + ";";
-            try {
-                db.execSQL(sql);
-            }catch(Exception e){}
-
-        }
-    }
-
-    //data 변경하기
-    private void updateData(Player p){
-        if(createdDB){
-            String sql = "UPDATE " + PLAYERTABLE
-                    + " SET totalScore = totalScore + '" + 100
-                    + "', violationAccel = violationAccel + '" + p.getViolationAccel()
-                    + "', violationVelocity = violationVelocity + '" + p.getViolationVelocity()
-                    + "', violationKal = violationKal +'" + p.getViolationKal()
-                    + "', useSleepinessCenter = useSleepinessCenter +'" + p.getUseSleepinessCenter()
-                    + "', mmr = mmr +'" + 10
-                    + "', conpetitionCount = conpetitionCount + '" + 10
-                    + "', winCount = winCount + '" + 10 + "'"
-                    + " WHERE email = '"+p.getEmail() +"';";
-            try {
-                db.execSQL(sql);
-            }catch(Exception e){
-                Toast.makeText(this, "update 실패", Toast.LENGTH_SHORT).show();
             }
         }
     }

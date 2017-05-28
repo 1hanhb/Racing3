@@ -1,9 +1,13 @@
 package com.example.munak.comptest;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -147,90 +151,5 @@ public class LoginActivity extends AppCompatActivity {
             }catch(Exception e){}
         }
     }
-
-    //table에 data 넣기
-    private void insertData(String name,Player p){
-        if(createdDB) {
-            try {
-                String sql ="insert into " + name
-                        + "(email, name, password, totalScore, violationAccel, violationVelocity, violationKal, useSleepinessCenter) values("
-                        + "'" + p.getEmail() + "',"
-                        + "'" + p.getName() + "',"
-                        + "'" + p.getPassword() + "',"
-                        + "'" + p.getTotalScore() + "',"
-                        + "'" + p.getViolationAccel() + "',"
-                        + "'" + p.getViolationVelocity() + "',"
-                        + "'" + p.getViolationKal() + "',"
-                        + "'" + p.getUseSleepinessCenter() + "');";
-                db.execSQL(sql);
-            }catch(Exception e){
-                Toast.makeText(this, "이미 존재하는 email입니다", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    //table 제거
-    private void removeTable(String tableName){
-        if(createdDB){
-            String sql = "drop table " + tableName;
-            try {
-                db.execSQL(sql);
-            }catch(Exception e){}
-        }
-    }
-
-    //data 조회하기
-    private void queryData(){
-        if(createdDB) {
-            String sql = "select * from " + PLAYERTABLE;
-            try {
-                Cursor cursor = db.rawQuery(sql, null);
-
-                if (cursor != null) {
-                    int count = cursor.getCount();
-
-                    for (int i = 0; i < count; i++) {
-                        cursor.moveToNext();
-
-                        String data = cursor.getString(0) + "/"
-                                + cursor.getString(1) + "/"
-                                + cursor.getString(2) + "/"
-                                + cursor.getString(3) + "/"
-                                + cursor.getString(4) + "/"
-                                + cursor.getString(5) + "/"
-                                + cursor.getString(6) + "/"
-                                + cursor.getString(7);
-                        Toast.makeText(this, i + "번째 : " + data, Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }catch(Exception e){}
-        }
-    }
-
-    //table에서 data제거
-    private void removeData(String email){
-        if(createdDB) {
-            String sql = "delete from " + PLAYERTABLE + " where email = " + email + ";";
-            try {
-                db.execSQL(sql);
-            }catch(Exception e){}
-
-        }
-    }
-
-    //data 변경하기
-    private void updateData(Player p){
-        if(createdDB){
-            String sql = "UPDATE " + PLAYERTABLE
-                    + " SET totalScore = totalScore + '" + p.getTotalScore()
-                    + "', violationAccel = violationAccel + '" + p.getViolationAccel()
-                    + "', violationVelocity = violationVelocity + '" + p.getViolationVelocity()
-                    + "', violationKal = violationKal '" + p.getViolationKal()
-                    + "', useSleepinessCenter = useSleepinessCenter '" + p.getUseSleepinessCenter() + "'"
-                    + " WHERE email = '"+p.getEmail() +"';";
-            try {
-                db.execSQL(sql);
-            }catch(Exception e){}
-        }
-    }
+    
 }

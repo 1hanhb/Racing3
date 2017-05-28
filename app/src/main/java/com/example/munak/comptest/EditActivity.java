@@ -44,7 +44,6 @@ public class EditActivity extends AppCompatActivity {
 
     String email;
     String path;
-    String path2;
 
     String mmr;
     byte[] photo;
@@ -54,17 +53,9 @@ public class EditActivity extends AppCompatActivity {
     ImageView editProfileEdge;
     ImageView editProfile;
 
-    Bitmap mSaveBm;
-
     private static final int PICK_FROM_CAMERA = 0;
     private static final int PICK_FROM_ALBUM = 1;
     private static final int CROP_FROM_IMAGE = 2;
-
-    //Uri photoUri;
-
-    //private String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA}; //권한 설정 변수
-
-    //private static final int MULTIPLE_PERMISSIONS = 101; //권한 동의 여부 문의 후 CallBack 함수에 쓰일 변수
 
     private Uri mImageCaptureUri;
     private ImageView iv_UserPhoto;
@@ -193,19 +184,9 @@ public class EditActivity extends AppCompatActivity {
                 byte[] byteArray = stream.toByteArray();
                 intent.putExtra("image2",byteArray);
                 setResult(RESULT_OK, intent);
-
-                /*
-                String sql = "update player set photo = '" + byteArray + "';";
-                try{
-                    db.execSQL(sql);
-                }catch(Exception e){
-                    Toast.makeText(EditActivity.this, "photo update fail", Toast.LENGTH_SHORT).show();
-                }
-                */
-
                 finish();
-                //startActivity(intent);
 
+                //startActivity(intent);
 
                 /*
                 String sql = "update player set path = '" + absoultePath + "' where email = '" + email + "';";
@@ -677,144 +658,4 @@ public class EditActivity extends AppCompatActivity {
             Toast.makeText(this, "db 생성 안됨", Toast.LENGTH_SHORT).show();
         }
     }
-/*
-    //table 생성
-    private void createTable() {
-        if(createdDB) {
-            try {
-                db.execSQL("create table player ("
-                        + "email text primary key,"
-                        + "name text,"
-                        + "password text,"
-                        + "totalScore integer,"
-                        + "violationAccel integer,"
-                        + "violationVelocity integer,"
-                        + "violationKal integer,"
-                        + "useSleepinessCenter integer,"
-                        + "mmr integer,"
-                        + "conpetitionCount integer,"
-                        + "winCount integer,"
-                        + "photo blob,"
-                        + "mission integer)"
-                );
-            }catch(Exception e){}
-        }
-    }
-
-    //table에 data 넣기
-    private boolean insertData(String name,Player p){
-        if(createdDB) {
-            try {
-                String sql ="insert into " + name
-                        + "(email, name, password, totalScore, violationAccel, " +
-                        "violationVelocity, violationKal, useSleepinessCenter, mmr, " +
-                        "conpetitionCount, winCount, mission ) values("
-                        + "'" + p.getEmail() + "',"
-                        + "'" + p.getName() + "',"
-                        + "'" + p.getPassword() + "',"
-                        + "'" + p.getTotalScore() + "',"
-                        + "'" + p.getViolationAccel() + "',"
-                        + "'" + p.getViolationVelocity() + "',"
-                        + "'" + p.getViolationKal() + "',"
-                        + "'" + p.getUseSleepinessCenter() + "',"
-                        + "'" + 0 + "',"
-                        + "'" + 0 + "',"
-                        + "'" + 0 + "',"
-                        + "'" + 0 +"')";
-                db.execSQL(sql);
-                return true;
-            } catch(Exception e) {
-                Toast.makeText(this, "이미 존재하는 아이디입니다", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
-
-
-
-    //table 제거
-    private void removeTable(String tableName){
-        if(createdDB){
-            String sql = "drop table " + tableName;
-            try {
-                db.execSQL(sql);
-                Toast.makeText(this, "테이블 제거", Toast.LENGTH_SHORT).show();
-            }catch(Exception e){Toast.makeText(this, "테이블 제거 실패", Toast.LENGTH_SHORT).show();}
-        }
-    }
-
-    //data 조회하기
-
-    private void queryData(){
-        if(createdDB) {
-            String sql = "select * from " + PLAYERTABLE;
-            try {
-                Cursor cursor = db.rawQuery(sql, null);
-
-                if (cursor != null) {
-                    int count = cursor.getCount();
-
-                    for (int i = 0; i < count; i++) {
-                        cursor.moveToNext();
-
-                        if(email.equals(cursor.getString(0))){
-                            path = cursor.getString(11);
-                            break;
-                        }
-                    }
-                }
-            } catch(Exception e){
-                Toast.makeText(this, "query 실패", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-    //table에서 data제거
-    private void removeData(String email){
-        if(createdDB) {
-            String sql = "delete from " + PLAYERTABLE + " where email = " + email + ";";
-            try {
-                db.execSQL(sql);
-            }catch(Exception e){}
-
-        }
-    }
-
-    //data 변경하기
-    private void updateData(Player p){
-        if(createdDB){
-            String sql = "UPDATE " + PLAYERTABLE
-                    + " SET totalScore = totalScore + '" + 100
-                    + "', violationAccel = violationAccel + '" + p.getViolationAccel()
-                    + "', violationVelocity = violationVelocity + '" + p.getViolationVelocity()
-                    + "', violationKal = violationKal +'" + p.getViolationKal()
-                    + "', useSleepinessCenter = useSleepinessCenter +'" + p.getUseSleepinessCenter()
-                    + "', mmr = mmr +'" + 10
-                    + "', conpetitionCount = conpetitionCount + '" + 10
-                    + "', winCount = winCount + '" + 10 + "'"
-                    + " WHERE email = '"+p.getEmail() +"';";
-            try {
-                db.execSQL(sql);
-            }catch(Exception e){
-                Toast.makeText(this, "update 실패", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    public byte[] getByteArrayFromDrawable(Drawable d) {
-        Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        byte[] data = stream.toByteArray();
-
-        return data;
-    }
-
-    public Bitmap getAppIcon(byte[] b) {
-        Bitmap bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
-        return bitmap;
-    }
-
-*/
 }
