@@ -60,7 +60,7 @@
                             android:layout_width="70dp"
                             android:layout_height="70dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/rank_img_master"/>
+                            android:src="@drawable/rank_img_platinum"/>
 
                         <ImageView
                             android:id="@+id/rankProfImg01"
@@ -92,7 +92,7 @@
                         android:id="@+id/rankTier01"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="MASTER"
+                        android:text="PLATINUM"
                         android:textSize="20dp"/>
 
                 </LinearLayout>
@@ -232,7 +232,7 @@
                             android:layout_width="70dp"
                             android:layout_height="70dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/rank_img_platinum"/>
+                            android:src="@drawable/rank_img_gold"/>
 
                         <ImageView
                             android:id="@+id/rankProfImg03"
@@ -257,14 +257,14 @@
                         android:id="@+id/rankName03"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="한효병"
+                        android:text="원빈"
                         android:textSize="20dp"/>
 
                     <TextView
                         android:id="@+id/rankTier03"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="PLATINUM"
+                        android:text="GOLD"
                         android:textSize="20dp"/>
 
                 </LinearLayout>
@@ -325,7 +325,7 @@
                             android:layout_width="55dp"
                             android:layout_height="55dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/emma22"/>
+                            android:src="@drawable/img123"/>
 
                     </FrameLayout>
 
@@ -343,7 +343,7 @@
                         android:id="@+id/rankName04"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Emma"
+                        android:text="김우빈"
                         android:textSize="20dp"/>
 
                     <TextView
@@ -411,7 +411,7 @@
                             android:layout_width="55dp"
                             android:layout_height="55dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/emma22"/>
+                            android:src="@drawable/img321"/>
 
                     </FrameLayout>
 
@@ -429,7 +429,7 @@
                         android:id="@+id/rankName05"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="emma2"
+                        android:text="여진구"
                         android:textSize="20dp"/>
 
                     <TextView
@@ -490,7 +490,7 @@
                             android:layout_width="70dp"
                             android:layout_height="70dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/rank_img_master"/>
+                            android:src="@drawable/rank_img_bronze"/>
 
                         <ImageView
                             android:id="@+id/rankProfImg06"
@@ -522,7 +522,7 @@
                         android:id="@+id/rankTier06"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="GOLD"
+                        android:text="BRONZE"
                         android:textSize="20dp"/>
 
                 </LinearLayout>
